@@ -1,40 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Project Setup: Poker Session Manager
 
-## Getting Started
+## Tech Stack und Tools
 
-First, run the development server:
+- **Framework:** Next.js (Page Router)
+- **Styling:** Styled Components
+- **Database:** MongoDB und Mongoose
+- **Data Fetching:** SWR
+- **Testing:** Jest, Cypress und Robot Framework
+- **Deployment:** Vercel
+- **Project Management:** GitHub Projects (Kanban)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Installation und Initiale Schritte
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. Repository und Next.js
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+- Repository auf GitHub initialisiert.
+- Next.js installiert mit:  
+  _npx create-next-app@latest ._
+- Wichtige Einstellungen:
+  - JavaScript
+  - ESLint
+  - kein Tailwind
+  - kein App Router
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### 2. Styling Setup
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+- Styled Components installieren:  
+  _npm install styled-components_
+- Datei `pages/_document.js` erstellen (für SSR Support).
+- GlobalStyles anlegen in:  
+  `components/GlobalStyle.js`
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Testing Environment
 
-## Learn More
+- Cypress installieren:  
+  _npm install cypress --save-dev_
+- Robot Framework (Python):  
+  _pip install robotframework robotframework-browser_
+- Browser Library initialisieren:  
+  _rfbrowser init_
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Datenbank und Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+- MongoDB Atlas Cluster einrichten.
+- Environment Variables:
+  - `MONGODB_URI` in `.env.local` hinterlegen.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## MVP Fokus und Workflow
 
-## Deploy on Vercel
+- **Spieler-Verwaltung:** CRUD-Operationen für alle Poker-Teilnehmer.
+- **Session-Tracking:** Aufzeichnung von Zeitstempel, Teilnehmern und Beträgen.
+- **Statistik-Modul:** Automatische Berechnung von Profit und Verlust.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+_Hinweis: Der Blind-Timer wurde aus dem MVP entfernt._
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+## Testing Strategie
+
+- **Unit (Jest):** Validierung der mathematischen Logik.
+- **E2E (Cypress):** Prüfung der technischen Browser-Abläufe.
+- **Acceptance (Robot):** Fachliche Abnahme der User Stories.
