@@ -5,9 +5,12 @@ const createJestConfig = nextJest({
 });
 
 const config = {
-  testEnvironment: "jest-environment-jsdom", // oder "node" für reine API-Tests
+  testEnvironment: "jest-environment-jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  // Wir lassen den Mapper weg, da next/jest das @/ meist selbst auflöst
+  moduleNameMapper: {
+    // Nur der Alias, den Rest erledigt Next.js
+    "^@/(.*)$": "<rootDir>/$1",
+  },
 };
 
 export default createJestConfig(config);
