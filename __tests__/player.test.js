@@ -21,7 +21,7 @@ describe("Player Model Test", () => {
   it("should fail if firstName is shorter than 2 characters", async () => {
     const shortNamePlayer = new Player({
       lastName: "Mustermann",
-      firstName: "A",
+      firstName: "B",
     });
     let err = null;
     try {
