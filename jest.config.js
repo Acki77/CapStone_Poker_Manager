@@ -5,12 +5,9 @@ const createJestConfig = nextJest({
 });
 
 const config = {
-  testEnvironment: "jest-environment-jsdom",
+  testEnvironment: "jest-environment-jsdom", // oder "node" für reine API-Tests
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  moduleNameMapper: {
-    // Der Alias für deine Modelle (falls Jest ihn noch nicht kennt)
-    "^@/(.*)$": "<rootDir>/$1",
-  },
+  // Wir lassen den Mapper weg, da next/jest das @/ meist selbst auflöst
 };
 
 export default createJestConfig(config);

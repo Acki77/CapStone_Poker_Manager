@@ -25,6 +25,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "jest": "^30.3.0",
-    "jest-environment-jsdom": "^30.3.0"
+    "jest-environment-jsdom": "^30.3.0",
+    "node-mocks-http": "^1.17.2"
   }
 }
