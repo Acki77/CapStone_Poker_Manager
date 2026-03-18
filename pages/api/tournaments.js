@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   // 1. Verbindung zur Datenbank herstellen
   await dbConnect();
 
-  // 2. Wir prüfen, welche HTTP-Methode genutzt wird
+  // 2. prüfen, welche HTTP-Methode genutzt wird
   if (req.method === "GET") {
     try {
       // 3. Alle Turniere aus der DB abrufen

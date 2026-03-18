@@ -25,6 +25,18 @@ Diese Collection speichert die individuellen Platzierungen pro Event und dient a
 | `points`           | Number   | Ja      | Erreichte Monatspunkte                | Wird nach Formel berechnet       |
 | `participantCount` | Number   | Ja      | Anzahl der Teilnehmer im Monat        | Beeinflusst die Punkteberechnung |
 
+## 3. Turnier-Struktur (Collection: tournaments)
+
+Diese Collection speichert die Metadaten eines Turnierevents und die Liste der Teilnehmer in der Reihenfolge ihres Ausscheidens.
+
+| Feldname       | Datentyp | Pflicht | Beschreibung                            | Regel / Validierung |
+| :------------- | :------- | :------ | :-------------------------------------- | :------------------ |
+| `date`         | Date     | Ja      | Exaktes Datum des Events                | ISO-Format          |
+| `month`        | String   | Ja      | Anzeigename des Monats                  | z.B. "Januar"       |
+| `participants` | [String] | Ja      | Liste der Namen (Platzierung = Index+1) | Array von Strings   |
+
+_Hinweis: In Phase 1 & 2 nutzen wir Strings für Teilnehmer. Später erfolgt die Verknüpfung zu den `Players` via ObjectId._
+
 ### Berechnungs-Logik (Business Rules)
 
 - **Monatstabelle:** Filtert alle `TournamentResults` nach einem bestimmten `eventDate`. Sortierung nach `points` absteigend.

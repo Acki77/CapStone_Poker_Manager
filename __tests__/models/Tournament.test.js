@@ -1,3 +1,4 @@
+/** @jest-environment node */
 import Tournament from "../../models/Tournament";
 
 describe("Tournament Model", () => {

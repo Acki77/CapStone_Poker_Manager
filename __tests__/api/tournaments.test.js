@@ -1,7 +1,10 @@
+/** @jest-environment node */
+import mongoose from "mongoose";
+import { config } from "dotenv";
+config({ path: ".env.local" });
 import { createMocks } from "node-mocks-http";
-import handleTournaments from "@/pages/api/tournaments";
-import dbConnect from "@/db/connect";
-import { jest } from "@jest/globals";
+const handleTournaments = require("@/pages/api/tournaments").default;
+const dbConnect = require("@/db/connect").default;
 import Tournament from "@/models/Tournament";
 
 // nutzen der DB- Verbindung
@@ -24,4 +27,7 @@ describe("/api/tournaments API Endpoint", () => {
     const data = JSON.parse(res._getData()); // Umwandlung der Antwort in ein JSON
     expect(Array.isArray(data)).toBe(true); // Enthält die Antwort wirklich eine Liste (Array)
   });
+});
+afterAll(async () => {
+  await mongoose.connection.close();
 });

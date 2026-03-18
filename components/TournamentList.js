@@ -34,6 +34,9 @@ const PlayerBadge = styled.span`
 `;
 
 export default function TournamentList({ tournaments }) {
+  if (!tournaments || tournaments.length === 0) {
+    return <p>Keine Turniere gefunden.</p>;
+  }
   return (
     <List>
       {tournaments.map((tournament) => (
