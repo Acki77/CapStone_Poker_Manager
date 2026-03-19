@@ -12,7 +12,7 @@ describe("AddTorunamentPage", () => {
   });
   it("sollte ein Eingabefeld für das Datum haben", () => {
     render(<AddTournamentPage />);
-    const dataInput = screen.getAllByLabelText(/datum/i);
+    const dataInput = screen.getByLabelText(/datum/i);
     expect(dataInput).toBeInTheDocument();
     expect(dataInput).toHaveAttribute("type", "date");
   });
