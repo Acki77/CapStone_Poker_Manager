@@ -8,7 +8,7 @@ const config = {
   testEnvironment: "jest-environment-jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   moduleNameMapper: {
-    // Der Alias für deine Modelle (falls Jest ihn noch nicht kennt)
+    // Nur der Alias, den Rest erledigt Next.js
     "^@/(.*)$": "<rootDir>/$1",
   },
 };
