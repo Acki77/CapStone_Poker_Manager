@@ -41,15 +41,18 @@ export default function TournamentList({ tournaments }) {
     <List>
       {tournaments.map((tournament) => (
         <Card key={tournament._id}>
-          <h2>{tournament.month} 2026</h2>
+          <h2>
+            {tournament.month}
+            {tournament.date ? new Date(tournament.date).getFullYear() : "2026"}
+          </h2>
           <p>
             <strong>Teilnehmeranzahl:</strong>
-            {tournament.participants.length}
+            {tournament.participants?.length || 0}
           </p>
 
           <PlayerList>
             {tournament.participants.map((player, index) => (
-              <PlayerBadge key={index}>
+              <PlayerBadge key={player}>
                 {index + 1}. {player}
               </PlayerBadge>
             ))}
