@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function AddTournamentPage() {
   const router = useRouter();
-//State für Eingabewerte definieren
+  //State für Eingabewerte definieren
   const [formData, setFormData] = useState({
     date: "",
     month: "",
@@ -17,20 +17,19 @@ export default function AddTournamentPage() {
       [name]: value,
     }));
   }
-// Fkt, beim Abschicken des Formulars (Speichern)
-async function handleSubmit(event) {
+  // Fkt, beim Abschicken des Formulars (Speichern)
+  async function handleSubmit(event) {
     event.preventDefault(); // Schaltet Neuladen der Seite aus
 
-    const response = await fetch (/"api/tournaments", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(formData),
+    const response = await fetch("/api/tournaments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
     });
     if (response.ok) {
-        router.push ("/"); // Zurück zur Startseite nach erfolgreichem Speichern
+      router.push("/"); // Zurück zur Startseite nach erfolgreichem Speichern
     }
-}
-
+  }
 
   return (
     <main>
@@ -41,13 +40,14 @@ async function handleSubmit(event) {
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="date">Datum:</label>
-          <input 
-          type="date" 
-          id="date" 
-          name="date" 
-          value={fornData.date}
-          onChange={handleChange}
-          required />
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div>
           <label htmlFor="month">Monat:</label>
