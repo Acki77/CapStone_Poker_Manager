@@ -42,11 +42,10 @@ describe("AddTournamentPage Logik", () => {
 
     const dateInput = screen.getByLabelText(/datum/i);
     const monthInput = screen.getByLabelText(/monat/i);
-    const submitButton = screen.getByRole("button", { name: /speichern/i });
-
     await user.type(dateInput, "2026-05-20");
     await user.type(monthInput, "Mai");
 
+    const submitButton = screen.getByRole("button", { name: /speichern/i });
     await user.click(submitButton);
     // fetch wird nur einmal aufgerufen
     // kurz warten für den Aufruf
@@ -61,5 +60,28 @@ describe("AddTournamentPage Logik", () => {
         body: JSON.stringify({ date: "2026-05-20", month: "Mai" }),
       }),
     );
+  });
+  it("sollte eine Fehlermeldung anzeigen, wenn der Server mit 400 antwortet", async () => {
+    const user = userEvent.setup();
+    // Simmuation eines Fehlers vom server (z.b. Bad request)
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 400,
+        json: () => Promise.resolve({ message: "Ungültiges Datum" }),
+      }),
+    );
+    render(<AddTournamentPage />);
+
+    const dateInput = screen.getByLabelText(/datum/i);
+    const monthInput = screen.getByLabelText(/monat/i);
+    await user.type(dateInput, "2026-05-20");
+    await user.type(monthInput, "Mai");
+    const submitButton = screen.getByRole("button", { name: /speichern/i });
+    await user.click(submitButton);
+    // warten, bis Fehermeldung in DOM angezeigt erscheint
+    const errorMessage = await screen.findByText(/ungültiges datum/i);
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveStyle({ color: "rgb(255, 0, 0)" });
   });
 });

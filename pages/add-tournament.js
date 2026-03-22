@@ -17,17 +17,30 @@ export default function AddTournamentPage() {
       [name]: value,
     }));
   }
+  // Neuer State für Fehler
+  const [error, setError] = useState(null);
+
   // Fkt, beim Abschicken des Formulars (Speichern)
   async function handleSubmit(event) {
     event.preventDefault(); // Schaltet Neuladen der Seite aus
+    setError(null); // Fehler zurücksetzen
+    try {
+      const response = await fetch("/api/tournaments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    const response = await fetch("/api/tournaments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    if (response.ok) {
-      router.push("/"); // Zurück zur Startseite nach erfolgreichem Speichern
+      if (response.ok) {
+        router.push("/"); // Zurück zur Startseite nach erfolgreichem Speichern
+      } else {
+        // Falls Server z.B. einen 400er Fehler schickt
+        const data = await response.json();
+        setError(data.message || "Da lief was schief.");
+      }
+    } catch (err) {
+      // Falls NW ausfällt
+      setError("Netwerkfehler. Bitte später erneut versuchen.");
     }
   }
 
@@ -37,6 +50,7 @@ export default function AddTournamentPage() {
       {/* Das 'htmlFor' im Label muss exakt mit der 'id' im Input übereinstimmen.
         Nur so findet 'screen.getByLabelText(/datum/i)' das Feld!
       */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="date">Datum:</label>
