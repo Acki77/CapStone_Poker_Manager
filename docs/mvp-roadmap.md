@@ -25,6 +25,12 @@ Eine Web-App zur Erfassung von Monatsturnieren einer privaten Poker-Runde mit au
   - Month (String/Number)
   - Results (Array of Objects: { position: Number, playerId: ObjectId, points: Number })
 
+## Technisches Setup / Qualitätssicherung
+
+- **Isolierte Test-Umgebung:** Einführung einer `.env.test.local` zur Trennung von Entwicklungs- und Testdaten.
+- **Datenbank-Sandbox:** Automatisierte Bereinigung der Test-Datenbank vor jedem Testlauf (`beforeAll`) und Schließen der Verbindung (`afterAll`).
+- **Mocking-Strategie:** Einsatz von API-Mocks (Jest), um UI-Logik unabhängig von der Datenbankverfügbarkeit zu prüfen.
+
 ## Aktuelle Meilensteine (Backlog)
 
 ### [Ticket 11] Turnier-Rahmendaten anlegen (Basic Setup)
