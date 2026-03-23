@@ -42,8 +42,10 @@ export default function TournamentList({ tournaments }) {
       {tournaments.map((tournament) => (
         <Card key={tournament._id}>
           <h2>
-            {tournament.month}
-            {tournament.date ? new Date(tournament.date).getFullYear() : "2026"}
+            {tournament.month}{" "}
+            {tournament.date
+              ? new Date(tournament.date).getFullYear()
+              : " 2026"}
           </h2>
           <p>
             <strong>Teilnehmeranzahl:</strong>

@@ -1,7 +1,11 @@
+/** @jest-environment jsdom */
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AddTournamentPage from "@/pages/add-tournament";
 import "@testing-library/jest-dom";
+/* import Tournament from "@/models/Tournament";
+import dbConnect from "@/db/connect";
+ */
 jest.mock("next/router", () => ({
   useRouter() {
     return {
@@ -14,6 +18,16 @@ jest.mock("next/router", () => ({
 }));
 
 describe("AddTorunamentPage", () => {
+  // Löschen der Test DB für sauberen Beginn
+  /* beforeAll(async () => {
+    await dbConnect();
+    await Tournament.deleteMany({});
+  });
+
+  afterEach(async () => {
+    await Tournament.deleteMany({});
+  }); */
+
   it(" sollte die korrekte Überschrift rendern", () => {
     render(<AddTournamentPage />);
     const heading = screen.getByRole("heading", {
