@@ -8,12 +8,13 @@ const List = styled.ul`
 `;
 
 const Card = styled.li`
-  border: 1px solid #ddd;
+  border: 1px solid #0070f3;
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  background: #ddd;
+  background: #dddddd70;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  color: #f3d700;
 `;
 const ActionContainer = styled.div`
   display: flex;
@@ -95,7 +96,7 @@ export default function TournamentList({ tournaments }) {
               : " 2026"}
           </h2>
           <p>
-            <strong>Teilnehmeranzahl:</strong>
+            <strong>Teilnehmeranzahl: </strong>
             {tournament.participants?.length || 0}
           </p>
 
