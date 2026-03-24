@@ -1,6 +1,15 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import styled from "styled-components";
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+`;
 
 export default function AddTournamentPage() {
   const router = useRouter();
@@ -67,7 +76,7 @@ export default function AddTournamentPage() {
         Nur so findet 'screen.getByLabelText(/datum/i)' das Feld!
       */}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="date">Datum:</label>
           <input
@@ -104,7 +113,7 @@ export default function AddTournamentPage() {
           />
         </div>
         <button type="submit">Speichern</button>
-      </form>
+      </Form>
       <hr />
       <Link href="/">Abbrechen</Link>
     </main>

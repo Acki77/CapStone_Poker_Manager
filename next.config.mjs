@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  compiler: {
+    styledComponents: true, // Dies sorgt dafür, dass Server und Client dieselben IDs nutzen
+  },
   reactStrictMode: true,
 };
 
