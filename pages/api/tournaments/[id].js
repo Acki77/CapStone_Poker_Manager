@@ -23,7 +23,7 @@ export default async function handler(request, response) {
   }
   // Fall 2: Turnier aktualisieren (Edit speichern)
 
-  if (request.method === "POST") {
+  if (request.method === "PUT") {
     try {
       const updateTournament = await Tournament.findByIdAndUpdate(
         id,
@@ -58,6 +58,6 @@ export default async function handler(request, response) {
       return response.status(500).json({ message: "Fehler beim Löschen!" });
     }
   }
-  // Auschluss anderer Methoden (z.b. POST)
+  // Auschluss anderer Methoden
   return response.status(405).json({ message: "Methode nicht erlaubt!" });
 }
