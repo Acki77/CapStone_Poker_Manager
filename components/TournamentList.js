@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { useRouter } from "next/router"; // Import für das Neuladen
 const List = styled.ul`
   list-style: none;
   padding: 0;
@@ -8,12 +8,42 @@ const List = styled.ul`
 `;
 
 const Card = styled.li`
-  border: 1px solid #ddd;
+  border: 1px solid #0070f3;
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  background: #ddd;
+  background: #dddddd70;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  color: #f3d700;
+`;
+const ActionContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1rem;
+`;
+
+const DeleteButton = styled.button`
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  &:hover {
+    background: #cc0000;
+  }
+`;
+const EditButton = styled.button`
+  background: #1b859d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  &:hover {
+    background: #00cc29;
+  }
 `;
 
 const PlayerList = styled.div`
@@ -34,8 +64,26 @@ const PlayerBadge = styled.span`
 `;
 
 export default function TournamentList({ tournaments }) {
+  const router = useRouter();
   if (!tournaments || tournaments.length === 0) {
     return <p>Keine Turniere gefunden.</p>;
+  }
+
+  async function handleDelete(id) {
+    const confirmed = confirm("Turnier wirklich löschen?");
+    if (!confirmed) return;
+
+    const response = await fetch(`/api/tournaments/${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      router.replace(router.asPath); // nur Seite aktualisieren ohne Full-Reload
+    } else {
+      alert("Fehler beim Löschen!");
+    }
+  }
+  async function handleEdit(id) {
+    router.push(`/tournaments/${id}`);
   }
   return (
     <List>
@@ -48,7 +96,7 @@ export default function TournamentList({ tournaments }) {
               : " 2026"}
           </h2>
           <p>
-            <strong>Teilnehmeranzahl:</strong>
+            <strong>Teilnehmeranzahl: </strong>
             {tournament.participants?.length || 0}
           </p>
 
@@ -59,6 +107,14 @@ export default function TournamentList({ tournaments }) {
               </PlayerBadge>
             ))}
           </PlayerList>
+          <ActionContainer>
+            <DeleteButton onClick={() => handleDelete(tournament._id)}>
+              🗑️ Löschen
+            </DeleteButton>
+            <EditButton onClick={() => handleEdit(tournament._id)}>
+              ✏️ Bearbeiten
+            </EditButton>
+          </ActionContainer>
         </Card>
       ))}
     </List>

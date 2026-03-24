@@ -35,6 +35,11 @@ Diese Collection speichert die Metadaten eines Turnierevents und die Liste der T
 | `month`        | String   | Ja      | Anzeigename des Monats                  | z.B. "Januar"       |
 | `participants` | [String] | Ja      | Liste der Namen (Platzierung = Index+1) | Array von Strings   |
 
+### Wichtige Logik-Transformation:
+
+- **Speichern:** Ein Textfeld-String (`"Frank, Felix"`) wird via `.split(',')` zu `["Frank", "Felix"]`.
+- **Anzeigen (Edit):** Das Array `["Frank", "Felix"]` wird via `.join(', ')` wieder zum String für das Textfeld.
+
 _Hinweis: In Phase 1 & 2 nutzen wir Strings für Teilnehmer. Später erfolgt die Verknüpfung zu den `Players` via ObjectId._
 
 ### Berechnungs-Logik (Business Rules)

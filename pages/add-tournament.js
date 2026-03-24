@@ -8,7 +8,12 @@ export default function AddTournamentPage() {
   const [formData, setFormData] = useState({
     date: "",
     month: "",
+    participants: "",
   });
+
+  // Neuer State für Fehler
+  const [error, setError] = useState(null);
+
   // Fkt, wenn sich Feld ändert (Tippen)
   function handleChange(event) {
     const { name, value } = event.target;
@@ -17,18 +22,29 @@ export default function AddTournamentPage() {
       [name]: value,
     }));
   }
-  // Neuer State für Fehler
-  const [error, setError] = useState(null);
 
   // Fkt, beim Abschicken des Formulars (Speichern)
   async function handleSubmit(event) {
     event.preventDefault(); // Schaltet Neuladen der Seite aus
     setError(null); // Fehler zurücksetzen
+
+    // Den String in ein Array umwandeln
+    const participantsArray = formData.participants
+      .split(",") // Trennen am Komma
+      .map((name) => name.trim()) // Leerzeichen entfernen
+      .filter((name) => name !== ""); // Leere Einträge (,,) löschen
+
+    // 2. Das neue Objekt für die API vorbereiten
+    const dataToSend = {
+      ...formData,
+      participants: participantsArray, // Wir überschreiben den String mit dem Array
+    };
+
     try {
       const response = await fetch("/api/tournaments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
@@ -73,6 +89,18 @@ export default function AddTournamentPage() {
             value={formData.month}
             onChange={handleChange}
             required
+          />
+        </div>
+        <div>
+          <label htmlFor="participants">Namen: </label>
+          <textarea
+            id="participants"
+            name="participants"
+            placeholder="Frank, Felix, Elena..."
+            value={formData.participants}
+            onChange={handleChange}
+            required
+            rows="4" // Damit man mehr sieht
           />
         </div>
         <button type="submit">Speichern</button>
