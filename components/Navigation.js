@@ -9,7 +9,7 @@ const Nav = styled.nav`
   align-items: center;
   padding: 0 2rem;
   height: 60px;
-  background-color: #1a1a1a;
+  background-color: #150f36;
   color: white;
   position: sticky;
   top: 0;
