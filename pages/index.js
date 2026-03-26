@@ -1,98 +1,116 @@
-import TournamentList from "@/components/TournamentList";
 import dbConnect from "@/db/connect";
 import Tournament from "@/models/Tournament";
-import { getYearlyRanking } from "@/utils/pointsEngine";
+import YearlyRanking from "@/components/YearlyRanking";
+import TournamentList from "@/components/TournamentList";
 import styled from "styled-components";
-
-const TableContainer = styled.section`
-  margin: 2rem auto;
-  max-width: 600px;
-  background: #2c2f33;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-`;
-
-const TableTitle = styled.h2`
-  text-align: center;
-  color: #3498db;
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-`;
-
-const StyledTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  color: #efefef;
-`;
-
-const Th = styled.th`
-  text-align: left;
-  padding: 10px;
-  border-bottom: 2px solid #40444b;
-  color: #b9bbbe;
-`;
-
-const Td = styled.td`
-  padding: 12px 10px;
-  border-bottom: 1px solid #40444b;
-`;
-
-const Rank = styled.span`
-  font-weight: bold;
-  color: ${(props) =>
-    props.$first ? "#f1c40f" : "#efefef"}; // Gold für Platz 1
-`;
+import Image from "next/image";
+import Link from "next/link";
 
 export default function HomePage({ tournaments }) {
-  const ranking = getYearlyRanking(tournaments);
+  // Prüfen, ob überhaupt Turniere vorhanden sind (Empty State Check)
+  const hasTournaments = tournaments && tournaments.length > 0;
 
   return (
     <main>
-      <TableContainer>
-        <TableTitle>🏆 Jahrestabelle 2026</TableTitle>
-        <StyledTable>
-          <thead>
-            <tr>
-              <Th>Platz</Th>
-              <Th>Name</Th>
-              <Th style={{ textAlign: "right" }}>Punkte</Th>
-            </tr>
-          </thead>
-          <tbody>
-            {ranking.map((player, index) => (
-              <tr key={player.name}>
-                <Td>
-                  <Rank $first={index === 0}>{index + 1}.</Rank>
-                </Td>
-                <Td>{player.name}</Td>
-                <Td style={{ textAlign: "right", fontWeight: "bold" }}>
-                  {player.points}
-                </Td>
-              </tr>
-            ))}
-          </tbody>
-        </StyledTable>
-      </TableContainer>
+      {!hasTournaments ? (
+        /* --- EMPTY STATE: Wenn noch keine Turniere da sind --- */
+        <EmptyStateContainer>
+          <WelcomeTitle>Willkommen im Walhalla</WelcomeTitle>
+          <StyledHeroImage
+            src="/images/titel-pic.jpg" // Pfad zu deinem Foto in public/images/
+            alt="Gaststätte Walhalla"
+            width={600}
+            height={400}
+            priority
+          />
+          <InfoText>
+            Seit über 20 Jahren der Ort für unsere Poker-Runden. Aktuell sind
+            noch keine Turniere für dieses Jahr eingetragen.
+          </InfoText>
+          <Link href="/tournaments/add" passHref>
+            <AddButton>Erstes Turnier hinzufügen</AddButton>
+          </Link>
+        </EmptyStateContainer>
+      ) : (
+        /* --- NORMAL STATE: Wenn Daten vorhanden sind --- */
+        <>
+          {/* Die neue, ausgelagerte Jahrestabelle */}
+          <YearlyRanking tournaments={tournaments} />
 
-      {/* Hier drunter kommt dann deine bisherige Liste der einzelnen Turniere */}
-      <hr style={{ border: "0.5px solid #40444b", margin: "3rem 0" }} />
-      <h3>Alle Turniere</h3>
-      <TournamentList tournaments={tournaments} />
+          <Divider />
+
+          <SectionTitle>Alle Turniere</SectionTitle>
+          <TournamentList tournaments={tournaments} />
+        </>
+      )}
     </main>
   );
 }
 
 export async function getServerSideProps() {
   await dbConnect();
-  // .lean() macht die Daten zu einfachen JS-Objekten (wichtig für Next.js Props)
-  const data = await Tournament.find().lean();
-
-  // Wir müssen Mongoose-IDs und Daten in Strings umwandeln
+  const data = await Tournament.find().sort({ date: -1 }).lean();
   const tournaments = JSON.parse(JSON.stringify(data));
 
   return {
     props: { tournaments },
   };
 }
+
+const EmptyStateContainer = styled.section`
+  text-align: center;
+  padding: 3rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+const WelcomeTitle = styled.h1`
+  color: #3498db;
+  margin-bottom: 2rem;
+`;
+
+const StyledHeroImage = styled(Image)`
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+`;
+
+const InfoText = styled.p`
+  margin: 2rem 0;
+  font-size: 1.2rem;
+  color: #b9bbbe;
+  line-height: 1.6;
+`;
+
+const AddButton = styled.button`
+  background-color: #27ae60;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+    background-color: #2ecc71;
+  }
+`;
+
+const SectionTitle = styled.h3`
+  text-align: center;
+  color: #efefef;
+  margin-top: 2rem;
+  font-size: 1.5rem;
+`;
+
+const Divider = styled.hr`
+  border: 0.5px solid #40444b;
+  margin: 3rem 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+`;
