@@ -4,7 +4,7 @@ import Tournament from "@/models/Tournament";
 export default async function handler(request, response) {
   await dbConnect();
 
-  // Die ID kommt aus der URL (z.B. /api/tournaments/65e9f1...)
+  // ID kommt aus der URL
   const { id } = request.query;
 
   // FALL 1: Ein einzelnes Turnier abrufen (EDIT)

@@ -9,7 +9,6 @@ export default function Layout({ children }) {
   return (
     <>
       <Nav>
-        {/* WICHTIG: Das legacyBehavior ist weg, und wir schachteln kein <a> mehr */}
         <Link href="/" passHref>
           <Logo $active={router.pathname === "/"}>🏆 TURNIER-APP</Logo>
         </Link>
@@ -40,8 +39,6 @@ export default function Layout({ children }) {
   );
 }
 
-// --- STYLING (Anpassung von .a zu .span) ---
-
 const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
@@ -64,15 +61,11 @@ const NavList = styled.ul`
   padding: 0;
 `;
 
-/**
- * GEÄNDERT: Wir nutzen styled.span statt styled.a
- * Der Link-Tag von Next.js kümmert sich um das "Anker"-Verhalten.
- */
 const StyledLink = styled.span`
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
-  cursor: pointer; /* Damit es sich wie ein Link anfühlt */
+  cursor: pointer;
 
   color: ${(props) => (props.$active ? "#3498db" : "#efefef")};
 

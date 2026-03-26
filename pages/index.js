@@ -17,7 +17,7 @@ export default function HomePage({ tournaments }) {
         <EmptyStateContainer>
           <WelcomeTitle>Willkommen im Walhalla</WelcomeTitle>
           <StyledHeroImage
-            src="/images/titel-pic.jpg" // Pfad zu deinem Foto in public/images/
+            src="/images/titel-pic.jpg"
             alt="Gaststätte Walhalla"
             width={600}
             height={400}
@@ -34,7 +34,6 @@ export default function HomePage({ tournaments }) {
       ) : (
         /* --- NORMAL STATE: Wenn Daten vorhanden sind --- */
         <>
-          {/* Die neue, ausgelagerte Jahrestabelle */}
           <YearlyRanking tournaments={tournaments} />
 
           <Divider />

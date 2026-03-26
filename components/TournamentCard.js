@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// WICHTIG: Wir importieren deine Logik für die Punkteberechnung
 import { calculatePoints } from "@/utils/pointsEngine";
 
 export default function TournamentCard({ tournament, onDelete, onEdit }) {
@@ -22,7 +21,7 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
       <PlayerList>
         {tournament.participants.map((player, index) => {
           /** * LOGIK: Punkte live berechnen
-           * Wir übergeben die Platzierung (index + 1) und die Gesamtanzahl
+           * Platzierung (index + 1) und die Gesamtanzahl
            */
           const points = calculatePoints(index + 1, participantCount);
 
@@ -48,19 +47,12 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
   );
 }
 
-// --- STYLING (Angepasst für die Punkte-Anzeige) ---
-
 const Card = styled.li`
   border: 1px solid #0070f3;
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  background: rgba(
-    221,
-    221,
-    221,
-    0.34
-  ); /* Dein Original-Grau mit Transparenz */
+  background: rgba(221, 221, 221, 0.34);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 `;
 
@@ -78,7 +70,7 @@ const TitleGroup = styled.div`
 
 const MonthYear = styled.h2`
   margin: 0;
-  color: #f3d700; /* Deine goldene Farbe */
+  color: #f3d700;
   font-size: 1.3rem;
 `;
 
@@ -102,7 +94,7 @@ const PlayerBadge = styled.div`
   font-size: 0.9rem;
   color: #333;
 
-  /* Dein Wunsch: Gold, Silber, Bronze oder Blau */
+  /* Gold, Silber, Bronze oder Blau */
   border-left: 12px solid
     ${(props) => {
       if (props.$rank === 1) return "#D4AF37";

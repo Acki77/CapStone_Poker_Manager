@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import TournamentCard from "./TournamentCard"; // Import der neuen Karte
+import TournamentCard from "./TournamentCard";
 
 export default function TournamentList({ tournaments }) {
   const router = useRouter();
@@ -9,7 +9,7 @@ export default function TournamentList({ tournaments }) {
     return <EmptyMessage>Keine Turniere gefunden.</EmptyMessage>;
   }
 
-  // --- LOGIK-FUNKTIONEN (Bleiben hier in der Liste) ---
+  // LOGIK-FUNKTIONEN
 
   async function handleDelete(id) {
     const confirmed = confirm("Turnier wirklich löschen?");

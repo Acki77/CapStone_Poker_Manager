@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       // Alle Turniere aus der DB abrufen
       const tournaments = await Tournament.find();
 
-      // Erfolg: Wir schicken die Daten mit Status 200 zurück
+      // Erfolg: Daten mit Status 200 zurück
       return res.status(200).json(tournaments);
     } catch (error) {
       // Fehlerfall: Etwas ging bei der DB-Abfrage schief
