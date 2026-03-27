@@ -1,9 +1,10 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import TournamentForm from "@/components/TournamentForm";
 
 describe("TournamentForm", () => {
-  test("transformiert den Teilnehmer-String korrekt in ein Array beim Absenden", () => {
-    // Ein Mock für die onSubmit Funktion
+  test("transformiert den Teilnehmer-String korrekt in ein Array beim Absenden", async () => {
+    const user = userEvent.setup();
     const mockOnSubmit = jest.fn();
 
     render(<TournamentForm onSubmit={mockOnSubmit} buttonText="Speichern" />);
@@ -15,14 +16,12 @@ describe("TournamentForm", () => {
     const submitButton = screen.getByRole("button", { name: /Speichern/i });
 
     // Felder ausfüllen
-    fireEvent.change(dateInput, { target: { value: "2026-03-26" } });
-    fireEvent.change(monthInput, { target: { value: "März" } });
-    fireEvent.change(participantsInput, {
-      target: { value: "Andreas, Felix,  Marco " }, // Mit extra Leerzeichen zum Testen
-    });
+    await user.type(dateInput, "2026-03-26");
+    await user.type(monthInput, "März");
+    await user.type(participantsInput, "Andreas, Felix,  Marco ");
 
     // Absenden
-    fireEvent.click(submitButton);
+    await user.click(submitButton);
 
     // Prüfen: Wurde onSubmit mit dem transformierten Array aufgerufen?
     expect(mockOnSubmit).toHaveBeenCalledWith(

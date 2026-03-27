@@ -1,24 +1,11 @@
 import styled from "styled-components";
-import { getYearlyRanking } from "@/utils/pointsEngine";
+import { getProcessedRanking } from "@/utils/pointsEngine";
 
 export default function YearlyRanking({ tournaments }) {
   if (!tournaments || tournaments.length === 0) return null;
 
-  const rawRanking = getYearlyRanking(tournaments);
+  const processedRanking = getProcessedRanking(tournaments);
   const currentYear = new Date(tournaments[0].date).getFullYear();
-
-  // Die Andreas-Regel Logik bleibt gleich
-  const processedRanking = rawRanking.reduce((acc, player, index) => {
-    const previousPlayer = acc[index - 1];
-    let displayRank;
-    if (previousPlayer && player.points === previousPlayer.points) {
-      displayRank = previousPlayer.displayRank;
-    } else {
-      displayRank = index + 1;
-    }
-    acc.push({ ...player, displayRank });
-    return acc;
-  }, []);
 
   return (
     <TableContainer>
@@ -33,7 +20,6 @@ export default function YearlyRanking({ tournaments }) {
         </thead>
         <tbody>
           {processedRanking.map((player) => (
-            /* WICHTIG: Die GANZE ZEILE bekommt den $rank Prop */
             <StyledTableRow key={player.name} $rank={player.displayRank}>
               <Td>
                 <RankBadge $rank={player.displayRank}>

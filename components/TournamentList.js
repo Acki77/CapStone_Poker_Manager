@@ -32,12 +32,13 @@ export default function TournamentList({ tournaments }) {
   return (
     <List>
       {tournaments.map((tournament) => (
-        <TournamentCard
-          key={tournament._id}
-          tournament={tournament}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-        />
+        <li key={tournament._id}>
+          <TournamentCard
+            tournament={tournament}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+          />
+        </li>
       ))}
     </List>
   );

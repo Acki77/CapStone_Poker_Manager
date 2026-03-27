@@ -9,9 +9,9 @@ export default function Layout({ children }) {
   return (
     <>
       <Nav>
-        <Link href="/" passHref>
-          <Logo $active={router.pathname === "/"}>🏆 TURNIER-APP</Logo>
-        </Link>
+        <Logo href="/" $active={router.pathname === "/"}>
+          🏆 TURNIER-APP
+        </Logo>
 
         <LogoWrapper>
           <Image
@@ -25,11 +25,12 @@ export default function Layout({ children }) {
 
         <NavList>
           <li>
-            <Link href="/tournaments/add" passHref>
-              <StyledLink $active={router.pathname === "/tournaments/add"}>
-                ➕ NEU
-              </StyledLink>
-            </Link>
+            <StyledLink
+              href="/tournaments/add"
+              $active={router.pathname === "/tournaments/add"}
+            >
+              ➕ NEU
+            </StyledLink>
           </li>
         </NavList>
       </Nav>
@@ -61,7 +62,7 @@ const NavList = styled.ul`
   padding: 0;
 `;
 
-const StyledLink = styled.span`
+const StyledLink = styled(Link)`
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;

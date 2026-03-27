@@ -26,7 +26,7 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
           const points = calculatePoints(index + 1, participantCount);
 
           return (
-            <PlayerBadge key={`${tournament._id}-${index}`} $rank={index + 1}>
+            <PlayerBadge key={`${tournament._id}-${player}`} $rank={index + 1}>
               <RankNumber>{index + 1}.</RankNumber>
               <PlayerName>{player}</PlayerName>
               <PointsLabel>({points} Pkt.)</PointsLabel>
@@ -47,7 +47,7 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
   );
 }
 
-const Card = styled.li`
+const Card = styled.article`
   border: 1px solid #0070f3;
   border-radius: 12px;
   padding: 1.5rem;

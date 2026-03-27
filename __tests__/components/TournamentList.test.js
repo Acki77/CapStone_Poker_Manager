@@ -26,8 +26,8 @@ describe("TournamentList", () => {
 
     render(<TournamentList tournaments={mockTournaments} />);
 
-    // prüfen Monatsnamen, die in den Karten erscheinen sollten
-    expect(screen.getByText(/Januar/i)).toBeInTheDocument();
-    expect(screen.getByText(/Februar/i)).toBeInTheDocument();
+    // prüfen Monatsnamen als Überschriften (testet auch Barrierefreiheit)
+    expect(screen.getByRole("heading", { name: /Januar/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Februar/i })).toBeInTheDocument();
   });
 });
