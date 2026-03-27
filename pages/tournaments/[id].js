@@ -42,7 +42,7 @@ export default function EditTournamentPage({ tournament }) {
   );
 }
 
-// DIESER TEIL IST ENTSCHEIDEND: Er holt die Daten VOR dem Rendern
+// Er holt die Daten VOR dem Rendern
 export async function getServerSideProps(context) {
   const { id } = context.params;
 
@@ -55,7 +55,7 @@ export async function getServerSideProps(context) {
       return { notFound: true };
     }
 
-    // Mongoose-Objekte sind komplex. Wir machen sie "Next.js-sicher":
+    // Mongoose-Objekte sind komplex; "Next.js-sicher" machen:
     const tournament = JSON.parse(JSON.stringify(data));
 
     return {

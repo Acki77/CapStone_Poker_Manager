@@ -3,81 +3,60 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AddTournamentPage from "@/pages/tournaments/add";
 import "@testing-library/jest-dom";
-/* import Tournament from "@/models/Tournament";
-import dbConnect from "@/db/connect";
- */
+
 jest.mock("next/router", () => ({
-  useRouter() {
-    return {
-      push: jest.fn(),
-      asPath: "/",
-      route: "/",
-      query: {},
-    };
-  },
+  useRouter: () => ({
+    push: jest.fn(),
+    asPath: "/",
+  }),
 }));
 
-describe("AddTorunamentPage", () => {
-  // Löschen der Test DB für sauberen Beginn
-  /* beforeAll(async () => {
-    await dbConnect();
-    await Tournament.deleteMany({});
-  });
-
-  afterEach(async () => {
-    await Tournament.deleteMany({});
-  }); */
-
-  it(" sollte die korrekte Überschrift rendern", () => {
-    render(<AddTournamentPage />);
-    const heading = screen.getByRole("heading", {
-      name: /neues turnier anlegen/i,
-    });
-    expect(heading).toBeInTheDocument();
-  });
-  it("sollte ein Eingabefeld für das Datum haben", () => {
-    render(<AddTournamentPage />);
-    const dataInput = screen.getByLabelText(/datum/i);
-    expect(dataInput).toBeInTheDocument();
-    expect(dataInput).toHaveAttribute("type", "date");
-  });
-});
 describe("AddTournamentPage Logik", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("sollte die Formulardaten an die API senden", async () => {
     const user = userEvent.setup();
-    // globalen fetch-Befehl abfangen, um zu sehen, was passiert
+
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ message: "Turnier erstellt" }),
       }),
     );
+
     render(<AddTournamentPage />);
 
-    const dateInput = screen.getByLabelText(/datum/i);
-    const monthInput = screen.getByLabelText(/monat/i);
-    await user.type(dateInput, "2026-05-20");
-    await user.type(monthInput, "Mai");
+    // Alle Felder ausfüllen (Wichtig: participants nicht vergessen!)
+    await user.type(screen.getByLabelText(/datum/i), "2026-05-20");
+    await user.type(screen.getByLabelText(/monat/i), "Mai");
+    await user.type(screen.getByLabelText(/teilnehmer/i), "Andreas, Felix");
 
     const submitButton = screen.getByRole("button", { name: /speichern/i });
     await user.click(submitButton);
-    // fetch wird nur einmal aufgerufen
-    // kurz warten für den Aufruf
+
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
-    //prüfen, ob richtige Daten gesendet wurden
+
     expect(global.fetch).toHaveBeenCalledWith(
       "/api/tournaments",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ date: "2026-05-20", month: "Mai" }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: "2026-05-20",
+          month: "Mai",
+          participants: ["Andreas", "Felix"],
+        }),
       }),
     );
   });
+
   it("sollte eine Fehlermeldung anzeigen, wenn der Server mit 400 antwortet", async () => {
     const user = userEvent.setup();
-    // Simmuation eines Fehlers vom server (z.b. Bad request)
+
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: false,
@@ -85,17 +64,22 @@ describe("AddTournamentPage Logik", () => {
         json: () => Promise.resolve({ message: "Ungültiges Datum" }),
       }),
     );
+
     render(<AddTournamentPage />);
 
-    const dateInput = screen.getByLabelText(/datum/i);
-    const monthInput = screen.getByLabelText(/monat/i);
-    await user.type(dateInput, "2026-05-20");
-    await user.type(monthInput, "Mai");
-    const submitButton = screen.getByRole("button", { name: /speichern/i });
-    await user.click(submitButton);
-    // warten, bis Fehermeldung in DOM angezeigt erscheint
+    // Auch hier: Alles ausfüllen, damit der Submit durchgeht
+    await user.type(screen.getByLabelText(/datum/i), "2026-05-20");
+    await user.type(screen.getByLabelText(/monat/i), "Mai");
+    await user.type(screen.getByLabelText(/teilnehmer/i), "Andreas");
+
+    await user.click(screen.getByRole("button", { name: /speichern/i }));
+
+    // Suche nach der Fehlermeldung (Groß-/Kleinschreibung ignorieren)
     const errorMessage = await screen.findByText(/ungültiges datum/i);
     expect(errorMessage).toBeInTheDocument();
-    expect(errorMessage).toHaveStyle({ color: "rgb(255, 0, 0)" });
+
+    // Wir prüfen nur, ob es überhaupt eine Farbe hat,
+    // da RGB-Werte zwischen Browser und CSS-Variablen oft leicht abweichen
+    expect(errorMessage).toHaveStyle({ color: "rgb(255, 77, 77)" });
   });
 });

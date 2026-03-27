@@ -48,3 +48,24 @@ export function getYearlyRanking(tournaments) {
     .map(([name, points]) => ({ name, points }))
     .sort((a, b) => b.points - a.points);
 }
+
+/**
+ * Wendet die Gleichstandsregel an: Spieler mit gleicher Punktzahl erhalten denselben Rang
+ * @param {Array} tournaments - Alle Turnier-Daten
+ * @returns {Array} Sortiertes Array mit {name, points, displayRank}
+ */
+export function getProcessedRanking(tournaments) {
+  const rawRanking = getYearlyRanking(tournaments);
+
+  return rawRanking.reduce((acc, player, index) => {
+    const previousPlayer = acc[index - 1];
+    let displayRank;
+    if (previousPlayer && player.points === previousPlayer.points) {
+      displayRank = previousPlayer.displayRank;
+    } else {
+      displayRank = index + 1;
+    }
+    acc.push({ ...player, displayRank });
+    return acc;
+  }, []);
+}

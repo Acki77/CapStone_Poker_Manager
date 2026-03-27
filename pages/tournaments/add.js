@@ -43,13 +43,13 @@ export default function AddTournamentPage() {
   }
 
   return (
-    <main>
+    <>
       <PageTitle>Neues Turnier anlegen</PageTitle>
 
       {/* Fehlermeldung wird hier angezeigt, falls der API-Call schiefgeht */}
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
       <TournamentForm onSubmit={addTournament} buttonText="Speichern" />
-    </main>
+    </>
   );
 }

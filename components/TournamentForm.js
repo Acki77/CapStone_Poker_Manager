@@ -22,7 +22,7 @@ const Label = styled.label`
   font-weight: bold;
   font-size: 0.9rem;
   color: #b9bbbe;
-  margin-bottom: -0.5rem; /* Rückt Label näher an das Input */
+  margin-bottom: -0.5rem;
 `;
 
 const Input = styled.input`
@@ -93,7 +93,7 @@ export default function TournamentForm({ onSubmit, initialData, buttonText }) {
       .map((name) => name.trim())
       .filter((name) => name !== ""); // löscht leere Einträge raus bei doppelten Kommas
 
-    // Wir geben die fertigen Daten an die übergeordnete Seite zurück
+    // Rückgabeder fertigen Daten an die übergeordnete Seite
     onSubmit({ ...formData, participants: participantsArray });
   }
 
