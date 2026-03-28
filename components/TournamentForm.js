@@ -38,18 +38,76 @@ const Input = styled.input`
   }
 `;
 
-const TextArea = styled.textarea`
-  padding: 0.8rem;
-  border-radius: 6px;
-  border: 1px solid #23272a;
+const AddPlayerControl = styled.div`
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+`;
+
+const ParticipantList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const ParticipantItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem;
+  background: ${(props) => {
+    if (props.$isDragging) return "rgba(255, 255, 255, 0.03)"; // Das gezogene Element selbst
+    if (props.$isDragOver) return "rgba(52, 152, 219, 0.15)"; // Die markierte Zielposition
+    return "rgba(255, 255, 255, 0.05)"; // Standard
+  }};
+  border: 1px solid
+    ${(props) => {
+      if (props.$isDragging) return "dashed rgba(255, 255, 255, 0.2)"; // Das gezogene Element selbst
+      if (props.$isDragOver) return "#3498db"; // Die markierte Zielposition
+      return "rgba(255, 255, 255, 0.1)"; // Standard
+    }};
+  border-radius: 8px;
+  opacity: ${(props) => (props.$isDragging ? 0.4 : 1)};
+  cursor: grab;
+  transition: all 0.2s ease-in-out;
+
+  & > * {
+    pointer-events: none; /* Verhindert, dass Kinder-Elemente die Drag-Events stören */
+  }
+`;
+
+const PlayerName = styled.span`
+  flex-grow: 1;
+`;
+
+const DragHandle = styled.span`
+  color: #888;
+  user-select: none;
+`;
+
+const PositionNumber = styled.span`
+  min-width: 25px;
+  font-variant-numeric: tabular-nums; /* Sorgt dafür, dass Zahlen (1 vs 11) gleich breit sind */
+  color: #b9bbbe;
+  font-weight: bold;
+`;
+
+const ControlButton = styled.button`
   background: #40444b;
+  border: 1px solid #23272a;
+  border-radius: 4px;
   color: white;
-  font-size: 1rem;
-  font-family: inherit;
-  resize: vertical;
-  &:focus {
-    outline: none;
-    border-color: #3498db;
+  padding: 4px 8px;
+  cursor: pointer;
+  &:hover:not(:disabled) {
+    background: #3498db;
+  }
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 `;
 
@@ -74,28 +132,70 @@ export default function TournamentForm({ onSubmit, initialData, buttonText }) {
   const [formData, setFormData] = useState({
     date: initialData?.date ? initialData.date.split("T")[0] : "",
     month: initialData?.month || "",
-    participants: initialData?.participants
-      ? initialData.participants.join(", ")
-      : "",
+    participants: initialData?.participants || [],
   });
+
+  // State für das Eingabefeld des "nächsten" Spielers
+  const [newName, setNewName] = useState("");
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  // Speichert den Index des Elements, ÜBER dem wir gerade schweben
+  const [dragOverIndex, setDragOverIndex] = useState(null);
 
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
+  function addPlayer() {
+    if (newName.trim() !== "") {
+      setFormData({
+        ...formData,
+        participants: [...formData.participants, newName.trim()],
+      });
+      setNewName(""); // Feld wieder leeren
+    }
+  }
+
+  function moveParticipant(oldIndex, newIndex) {
+    if (newIndex < 0 || newIndex >= formData.participants.length) return;
+    const newParticipants = [...formData.participants];
+    const [movedElement] = newParticipants.splice(oldIndex, 1);
+    newParticipants.splice(newIndex, 0, movedElement);
+    setFormData({ ...formData, participants: newParticipants });
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
 
-    // Die Transformation von String zu Array
-    const participantsArray = formData.participants
-      .split(",")
-      .map((name) => name.trim())
-      .filter((name) => name !== ""); // löscht leere Einträge raus bei doppelten Kommas
-
-    // Rückgabeder fertigen Daten an die übergeordnete Seite
-    onSubmit({ ...formData, participants: participantsArray });
+    onSubmit(formData);
   }
+
+  const handleDragStart = (index) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (event) => {
+    // Absolut notwendig, um "drop" zu erlauben
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (index) => {
+    // Wenn wir in ein Element ziehen, markieren wir es
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    // Wenn wir rausziehen, löschen wir die Markierung
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (index) => {
+    // Wenn wir loslassen:
+    if (draggedIndex === null) return;
+    moveParticipant(draggedIndex, index); // Tausch ausführen
+    setDraggedIndex(null); // Drag beenden
+    setDragOverIndex(null); // Markierung löschen
+  };
 
   return (
     <FormWrapper>
@@ -121,16 +221,71 @@ export default function TournamentForm({ onSubmit, initialData, buttonText }) {
           placeholder="z.B. März"
         />
 
-        <Label htmlFor="participants">Teilnehmer (mit Komma getrennt):</Label>
-        <TextArea
-          id="participants"
-          name="participants"
-          value={formData.participants}
-          onChange={handleChange}
-          required
-          rows="5"
-          placeholder="Spieler 1, Spieler 2, Spieler 3..."
-        />
+        <Label>Neuen Teilnehmer hinzufügen:</Label>
+        <AddPlayerControl>
+          <Input
+            type="text"
+            value={newName}
+            onChange={(event) => setNewName(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                addPlayer();
+              }
+            }}
+            placeholder="eindeutiger Name..."
+          />
+          <ControlButton type="button" onClick={addPlayer}>
+            ➕
+          </ControlButton>
+        </AddPlayerControl>
+
+        <Label>Teilnehmer & Platzierung</Label>
+        <ParticipantList>
+          {formData.participants.map((participant, index) => (
+            <ParticipantItem
+              key={index}
+              draggable
+              $isDragging={draggedIndex === index}
+              $isDragOver={dragOverIndex === index} // visuelle Feedback
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={handleDragOver}
+              onDragEnter={() => handleDragEnter(index)}
+              onDragLeave={handleDragLeave}
+              onDrop={() => handleDrop(index)}
+            >
+              <DragHandle>⠿</DragHandle>
+              <PositionNumber>{index + 1}.</PositionNumber>
+              <PlayerName>{participant}</PlayerName>
+
+              <ControlButton
+                type="button"
+                onClick={() => moveParticipant(index, index - 1)}
+                disabled={index === 0}
+              >
+                ⬆️
+              </ControlButton>
+              <ControlButton
+                type="button"
+                onClick={() => moveParticipant(index, index + 1)}
+                disabled={index === formData.participants.length - 1}
+              >
+                ⬇️
+              </ControlButton>
+              <ControlButton
+                type="button"
+                onClick={() => {
+                  const updated = formData.participants.filter(
+                    (_, i) => i !== index,
+                  );
+                  setFormData({ ...formData, participants: updated });
+                }}
+              >
+                ❌
+              </ControlButton>
+            </ParticipantItem>
+          ))}
+        </ParticipantList>
 
         <SubmitButton type="submit">{buttonText || "Speichern"}</SubmitButton>
       </Form>
