@@ -53,32 +53,6 @@ const ParticipantList = styled.ul`
   gap: 0.5rem;
 `;
 
-const ParticipantItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.6rem;
-  background: ${(props) => {
-    if (props.$isDragging) return "rgba(255, 255, 255, 0.03)"; // Das gezogene Element selbst
-    if (props.$isDragOver) return "rgba(52, 152, 219, 0.15)"; // Die markierte Zielposition
-    return "rgba(255, 255, 255, 0.05)"; // Standard
-  }};
-  border: 1px solid
-    ${(props) => {
-      if (props.$isDragging) return "dashed rgba(255, 255, 255, 0.2)"; // Das gezogene Element selbst
-      if (props.$isDragOver) return "#3498db"; // Die markierte Zielposition
-      return "rgba(255, 255, 255, 0.1)"; // Standard
-    }};
-  border-radius: 8px;
-  opacity: ${(props) => (props.$isDragging ? 0.4 : 1)};
-  cursor: grab;
-  transition: all 0.2s ease-in-out;
-
-  & > * {
-    pointer-events: none; /* Verhindert, dass Kinder-Elemente die Drag-Events stören */
-  }
-`;
-
 const PlayerName = styled.span`
   flex-grow: 1;
 `;
@@ -124,6 +98,39 @@ const SubmitButton = styled.button`
   transition: background 0.2s;
   &:hover {
     background-color: #2980b9;
+  }
+`;
+
+const ParticipantItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem;
+  background: ${(props) => {
+    if (props.$isDragging) return "rgba(255, 255, 255, 0.03)"; // Das gezogene Element selbst
+    if (props.$isDragOver) return "rgba(52, 152, 219, 0.15)"; // Die markierte Zielposition
+    return "rgba(255, 255, 255, 0.05)"; // Standard
+  }};
+  border: 1px solid
+    ${(props) => {
+      if (props.$isDragging) return "dashed rgba(255, 255, 255, 0.2)"; // Das gezogene Element selbst
+      if (props.$isDragOver) return "#3498db"; // Die markierte Zielposition
+      return "rgba(255, 255, 255, 0.1)"; // Standard
+    }};
+  border-radius: 8px;
+  opacity: ${(props) => (props.$isDragging ? 0.4 : 1)};
+  cursor: grab;
+  transition: all 0.2s ease-in-out;
+
+  /* Name, Handle und Nummer ignorieren die Maus (verhindert Flackern beim Ziehen) */
+  ${PlayerName}, ${DragHandle}, ${PositionNumber} {
+    pointer-events: none;
+  }
+
+  /* Die Buttons MÜSSEN Klicks empfangen können, damit Up/Down/Löschen geht! */
+  ${ControlButton} {
+    pointer-events: auto;
+    cursor: pointer;
   }
 `;
 
@@ -175,22 +182,22 @@ export default function TournamentForm({ onSubmit, initialData, buttonText }) {
   };
 
   const handleDragOver = (event) => {
-    // Absolut notwendig, um "drop" zu erlauben
+    // notwendig, um "drop" zu erlauben
     event.preventDefault();
   };
 
   const handleDragEnter = (index) => {
-    // Wenn wir in ein Element ziehen, markieren wir es
+    // Beim Element ziehen, markieren wir es
     setDragOverIndex(index);
   };
 
   const handleDragLeave = () => {
-    // Wenn wir rausziehen, löschen wir die Markierung
+    // beim rausziehen, löschen wir die Markierung
     setDragOverIndex(null);
   };
 
   const handleDrop = (index) => {
-    // Wenn wir loslassen:
+    // beim loslassen:
     if (draggedIndex === null) return;
     moveParticipant(draggedIndex, index); // Tausch ausführen
     setDraggedIndex(null); // Drag beenden
