@@ -33,12 +33,13 @@ export function getYearlyRanking(tournaments) {
 
     tournament.participants.forEach((name, index) => {
       const points = calculatePoints(index, totalTN);
+      const normalizedName = name.trim();
 
       // Wir kummulieren: Wenn Name schon da, addieren, sonst neu anlegen
-      if (ranking[name]) {
-        ranking[name] += points;
+      if (ranking[normalizedName]) {
+        ranking[normalizedName] += points;
       } else {
-        ranking[name] = points;
+        ranking[normalizedName] = points;
       }
     });
   });

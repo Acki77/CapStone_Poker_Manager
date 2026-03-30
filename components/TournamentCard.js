@@ -23,7 +23,7 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
           /** * LOGIK: Punkte live berechnen
            * Platzierung (index + 1) und die Gesamtanzahl
            */
-          const points = calculatePoints(index + 1, participantCount);
+          const points = calculatePoints(index, participantCount);
 
           return (
             <PlayerBadge key={`${tournament._id}-${player}`} $rank={index + 1}>
