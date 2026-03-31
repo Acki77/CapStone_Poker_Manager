@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.14.3 on win32)" generated="2026-03-31T21:23:16.167716" rpa="false" schemaversion="5">
+<suite id="s1" name="01 Smoke" source="D:\web-bootcamp\capstone-poker-manager\robot\tests\01_smoke.robot">
+<kw name="Open App" owner="common" type="SETUP">
+<kw name="New Browser" owner="Browser">
+<msg time="2026-03-31T21:23:16.561722" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\web-bootcamp\\capstone-poker-manager\\robot\\results\\browser\\traces\\temp\\2a80fa11-3d1d-4298-8f23-c9ffaad17c48"}</msg>
+<msg time="2026-03-31T21:23:16.605301" level="INFO">Starting Browser process C:\Python314\Lib\site-packages\Browser\wrapper\index.js using at 127.0.0.1:52382</msg>
+<msg time="2026-03-31T21:23:18.662698" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\web-bootcamp\\capstone-poker-manager\\robot\\results\\browser\\traces\\temp\\2a80fa11-3d1d-4298-8f23-c9ffaad17c48"}</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>headless=${HEADLESS}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new playwright Browser with specified options.</doc>
+<status status="PASS" start="2026-03-31T21:23:16.560640" elapsed="2.102410"/>
+</kw>
+<kw name="New Context" owner="Browser">
+<msg time="2026-03-31T21:23:18.667404" level="INFO">{
+  "acceptDownloads": true,
+  "bypassCSP": false,
+  "forcedColors": "none",
+  "ignoreHTTPSErrors": false,
+  "javaScriptEnabled": true,
+  "offline": false,
+  "reducedMotion": "no-preference",
+  "serviceWorkers": "allow",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  }
+}</msg>
+<msg time="2026-03-31T21:23:18.709289" level="INFO">Successfully created context. </msg>
+<msg time="2026-03-31T21:23:18.709477" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<arg>viewport={'width': 1280, 'height': 720}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Create a new BrowserContext with specified options.</doc>
+<status status="PASS" start="2026-03-31T21:23:18.663551" elapsed="0.046112"/>
+</kw>
+<kw name="New Page" owner="Browser">
+<msg time="2026-03-31T21:23:20.653835" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
+<arg>${BASE_URL}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Open a new Page.</doc>
+<status status="PASS" start="2026-03-31T21:23:18.710010" elapsed="1.944334"/>
+</kw>
+<doc>Öffnet den Browser und navigiert zur Startseite</doc>
+<status status="PASS" start="2026-03-31T21:23:16.559530" elapsed="4.095133"/>
+</kw>
+<test id="s1-t1" name="App ist erreichbar" line="10">
+<kw name="Get Element" owner="Browser">
+<msg time="2026-03-31T21:23:21.026999" level="INFO">Locator found successfully.</msg>
+<arg>body</arg>
+<tag>Getter</tag>
+<tag>PageContent</tag>
+<doc>Returns a reference to a Playwright [https://playwright.dev/docs/api/class-locator|Locator].</doc>
+<status status="PASS" start="2026-03-31T21:23:20.949171" elapsed="0.078161"/>
+</kw>
+<kw name="Get Title" owner="Browser">
+<msg time="2026-03-31T21:23:21.038837" level="INFO">Title: 'After Work - Poker Manager'</msg>
+<arg>==</arg>
+<arg>After Work - Poker Manager</arg>
+<tag>Assertion</tag>
+<tag>Getter</tag>
+<tag>PageContent</tag>
+<doc>Returns the title of the current page.</doc>
+<status status="PASS" start="2026-03-31T21:23:21.030342" elapsed="0.008737"/>
+</kw>
+<doc>Prüft ob die Startseite lädt und einen Titel hat</doc>
+<tag>smoke</tag>
+<status status="PASS" start="2026-03-31T21:23:20.654881" elapsed="0.384766"/>
+</test>
+<kw name="Close App" owner="common" type="TEARDOWN">
+<kw name="Close Browser" owner="Browser">
+<msg time="2026-03-31T21:23:21.861023" level="INFO">Closed browser</msg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-03-31T21:23:21.052523" elapsed="0.808789"/>
+</kw>
+<doc>Schließt alle offenen Browser-Instanzen</doc>
+<status status="PASS" start="2026-03-31T21:23:21.052026" elapsed="0.809490"/>
+</kw>
+<status status="PASS" start="2026-03-31T21:23:16.170818" elapsed="5.690799"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" fail="0" skip="0">smoke</stat>
+</tag>
+<suite>
+<stat name="01 Smoke" id="s1" pass="1" fail="0" skip="0">01 Smoke</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

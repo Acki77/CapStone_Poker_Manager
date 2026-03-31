@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:test": "cross-env NODE_ENV=test next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest"
+    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest",
+    "test:robot": "robot --outputdir robot/results robot/tests/",
+    "test:robot:smoke": "robot --outputdir robot/results --include smoke robot/tests/"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
@@ -21,6 +24,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "cross-env": "^10.1.0",
     "cypress": "^15.11.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
