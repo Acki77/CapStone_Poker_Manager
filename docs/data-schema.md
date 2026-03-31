@@ -42,6 +42,19 @@ Diese Collection speichert die Metadaten eines Turnierevents und die Liste der T
 
 _Hinweis: In Phase 1 & 2 nutzen wir Strings für Teilnehmer. Später erfolgt die Verknüpfung zu den `Players` via ObjectId._
 
+### Aktueller Implementierungsstand (Phase 2 – abgeschlossen)
+
+- **Teilnehmer-Eingabe:** Die Textarea wurde durch eine **Drag & Drop Liste** ersetzt (native HTML5 DnD + Up/Down-Buttons für Mobile).
+- **Teilnehmer-State:** War String, ist jetzt Array – kein `.split()` mehr nötig beim Speichern.
+- **Off-by-one Fix:** Rang-Berechnung in `pointsEngine.js` korrigiert (Rang 1 = Index 0).
+- **Browser-Titel:** Alle Seiten zeigen "After Work - Poker Manager" im Browser-Tab (`_app.js`).
+
+### Geplante Erweiterungen (Phase 3)
+
+- **Google OAuth Login** (via NextAuth.js): Adminrechte für Turnierverwaltung (anlegen, editieren, löschen). Besucher haben nur Lesezugriff.
+- **LinkedIn API Integration:** Turnierdaten (Datum, Teilnehmer, Profilbilder) automatisch aus LinkedIn-Events importieren. Manuelles Hinzufügen bleibt als Fallback.
+- **Player-Verknüpfung:** Teilnehmer werden zukünftig als ObjectId-Referenz auf `Players` gespeichert statt als String.
+
 ### Berechnungs-Logik (Business Rules)
 
 - **Monatstabelle:** Filtert alle `TournamentResults` nach einem bestimmten `eventDate`. Sortierung nach `points` absteigend.
