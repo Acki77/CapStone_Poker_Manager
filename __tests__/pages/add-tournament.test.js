@@ -11,6 +11,17 @@ jest.mock("next/router", () => ({
   }),
 }));
 
+// AddTournamentPage rendert TournamentForm → TournamentCard nicht direkt,
+// aber TournamentForm selbst braucht kein useSession - kein Mock nötig hier.
+// AddTournamentPage rendert TournamentForm das kein useSession nutzt - OK.
+
+// Hilfsfunktion: Teilnehmer über das neue Eingabefeld hinzufügen
+async function addParticipant(user, name) {
+  const nameInput = screen.getByPlaceholderText(/eindeutiger Name/i);
+  await user.type(nameInput, name);
+  await user.click(screen.getByText("➕"));
+}
+
 describe("AddTournamentPage Logik", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -23,18 +34,17 @@ describe("AddTournamentPage Logik", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ message: "Turnier erstellt" }),
-      }),
+      })
     );
 
     render(<AddTournamentPage />);
 
-    // Alle Felder ausfüllen (Wichtig: participants nicht vergessen!)
     await user.type(screen.getByLabelText(/datum/i), "2026-05-20");
     await user.type(screen.getByLabelText(/monat/i), "Mai");
-    await user.type(screen.getByLabelText(/teilnehmer/i), "Andreas, Felix");
+    await addParticipant(user, "Andreas");
+    await addParticipant(user, "Felix");
 
-    const submitButton = screen.getByRole("button", { name: /speichern/i });
-    await user.click(submitButton);
+    await user.click(screen.getByRole("button", { name: /speichern/i }));
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -50,7 +60,7 @@ describe("AddTournamentPage Logik", () => {
           month: "Mai",
           participants: ["Andreas", "Felix"],
         }),
-      }),
+      })
     );
   });
 
@@ -62,24 +72,19 @@ describe("AddTournamentPage Logik", () => {
         ok: false,
         status: 400,
         json: () => Promise.resolve({ message: "Ungültiges Datum" }),
-      }),
+      })
     );
 
     render(<AddTournamentPage />);
 
-    // Auch hier: Alles ausfüllen, damit der Submit durchgeht
     await user.type(screen.getByLabelText(/datum/i), "2026-05-20");
     await user.type(screen.getByLabelText(/monat/i), "Mai");
-    await user.type(screen.getByLabelText(/teilnehmer/i), "Andreas");
+    await addParticipant(user, "Andreas");
 
     await user.click(screen.getByRole("button", { name: /speichern/i }));
 
-    // Suche nach der Fehlermeldung (Groß-/Kleinschreibung ignorieren)
     const errorMessage = await screen.findByText(/ungültiges datum/i);
     expect(errorMessage).toBeInTheDocument();
-
-    // Wir prüfen nur, ob es überhaupt eine Farbe hat,
-    // da RGB-Werte zwischen Browser und CSS-Variablen oft leicht abweichen
     expect(errorMessage).toHaveStyle({ color: "rgb(255, 77, 77)" });
   });
 });

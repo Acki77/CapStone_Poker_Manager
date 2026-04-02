@@ -11,6 +11,11 @@ jest.mock("next/router", () => ({
   }),
 }));
 
+// TournamentList rendert TournamentCard - die braucht useSession
+jest.mock("next-auth/react", () => ({
+  useSession: jest.fn(() => ({ data: null })),
+}));
+
 describe("TournamentList", () => {
   test("zeigt eine Nachricht an, wenn die Liste leer ist", () => {
     render(<TournamentList tournaments={[]} />);

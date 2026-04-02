@@ -3,31 +3,63 @@ import userEvent from "@testing-library/user-event";
 import TournamentForm from "@/components/TournamentForm";
 
 describe("TournamentForm", () => {
-  test("transformiert den Teilnehmer-String korrekt in ein Array beim Absenden", async () => {
+  test("fügt Teilnehmer einzeln hinzu und übergibt sie als Array beim Absenden", async () => {
     const user = userEvent.setup();
     const mockOnSubmit = jest.fn();
 
     render(<TournamentForm onSubmit={mockOnSubmit} buttonText="Speichern" />);
 
-    // Eingabefelder finden
-    const dateInput = screen.getByLabelText(/Datum:/i);
-    const monthInput = screen.getByLabelText(/Monat:/i);
-    const participantsInput = screen.getByLabelText(/Teilnehmer/i);
-    const submitButton = screen.getByRole("button", { name: /Speichern/i });
+    // Pflichtfelder ausfüllen
+    await user.type(screen.getByLabelText(/Datum:/i), "2026-03-26");
+    await user.type(screen.getByLabelText(/Monat:/i), "März");
 
-    // Felder ausfüllen
-    await user.type(dateInput, "2026-03-26");
-    await user.type(monthInput, "März");
-    await user.type(participantsInput, "Andreas, Felix,  Marco ");
+    // Teilnehmer einzeln über das Eingabefeld + Button hinzufügen
+    // placeholder="eindeutiger Name..." identifiziert das Input eindeutig
+    const nameInput = screen.getByPlaceholderText(/eindeutiger Name/i);
+    await user.type(nameInput, "Andreas");
+    await user.click(screen.getByText("➕"));
+
+    await user.type(nameInput, "Felix");
+    await user.click(screen.getByText("➕"));
 
     // Absenden
-    await user.click(submitButton);
+    await user.click(screen.getByRole("button", { name: /Speichern/i }));
 
-    // Prüfen: Wurde onSubmit mit dem transformierten Array aufgerufen?
+    // onSubmit muss mit Array aufgerufen worden sein
     expect(mockOnSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
-        participants: ["Andreas", "Felix", "Marco"], // Leerzeichen müssen weg sein
-      }),
+        participants: ["Andreas", "Felix"],
+      })
     );
+  });
+
+  test("Submit-Button zeigt 'Wird gespeichert...' wenn isSubmitting=true", () => {
+    // isSubmitting=true wird direkt als Prop übergeben - kein Klick nötig
+    // Wir testen nur das visuelle Verhalten der Komponente
+    render(
+      <TournamentForm
+        onSubmit={() => {}}
+        buttonText="Speichern"
+        isSubmitting={true}
+      />
+    );
+
+    const button = screen.getByRole("button", { name: /Wird gespeichert/i });
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
+  });
+
+  test("Submit-Button ist aktiv und zeigt 'Speichern' wenn isSubmitting=false", () => {
+    render(
+      <TournamentForm
+        onSubmit={() => {}}
+        buttonText="Speichern"
+        isSubmitting={false}
+      />
+    );
+
+    const button = screen.getByRole("button", { name: /Speichern/i });
+    expect(button).toBeInTheDocument();
+    expect(button).not.toBeDisabled();
   });
 });

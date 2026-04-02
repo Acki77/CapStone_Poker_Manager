@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 7.4.2 (Python 3.14.3 on win32)" generated="2026-03-31T21:23:16.167716" rpa="false" schemaversion="5">
-<suite id="s1" name="01 Smoke" source="D:\web-bootcamp\capstone-poker-manager\robot\tests\01_smoke.robot">
+<robot generator="Robot 7.4.2 (Python 3.14.3 on win32)" generated="2026-04-02T16:29:58.624671" rpa="false" schemaversion="5">
+<suite id="s1" name="02 Auth" source="D:\web-bootcamp\capstone-poker-manager\robot\tests\02_auth.robot">
 <kw name="Open App" owner="common" type="SETUP">
 <kw name="New Browser" owner="Browser">
-<msg time="2026-03-31T21:23:16.561722" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\web-bootcamp\\capstone-poker-manager\\robot\\results\\browser\\traces\\temp\\2a80fa11-3d1d-4298-8f23-c9ffaad17c48"}</msg>
-<msg time="2026-03-31T21:23:16.605301" level="INFO">Starting Browser process C:\Python314\Lib\site-packages\Browser\wrapper\index.js using at 127.0.0.1:52382</msg>
-<msg time="2026-03-31T21:23:18.662698" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\web-bootcamp\\capstone-poker-manager\\robot\\results\\browser\\traces\\temp\\2a80fa11-3d1d-4298-8f23-c9ffaad17c48"}</msg>
+<msg time="2026-04-02T16:29:59.397460" level="INFO">{"browser": "chromium", "headless": false, "chromiumSandbox": false, "devtools": false, "handleSIGHUP": true, "handleSIGINT": true, "handleSIGTERM": true, "slowMo": 0.0, "timeout": 30000.0, "tracesDir": "D:\\web-bootcamp\\capstone-poker-manager\\robot\\results\\browser\\traces\\temp\\9e86d449-0f67-444c-b663-fca8c39be08d"}</msg>
+<msg time="2026-04-02T16:29:59.449765" level="INFO">Starting Browser process C:\Python314\Lib\site-packages\Browser\wrapper\index.js using at 127.0.0.1:51952</msg>
+<msg time="2026-04-02T16:30:02.774794" level="INFO">Successfully created browser with options: {"browser":"chromium","headless":false,"chromiumSandbox":false,"devtools":false,"handleSIGHUP":true,"handleSIGINT":true,"handleSIGTERM":true,"slowMo":0,"timeout":30000,"tracesDir":"D:\\web-bootcamp\\capstone-poker-manager\\robot\\results\\browser\\traces\\temp\\9e86d449-0f67-444c-b663-fca8c39be08d"}</msg>
 <arg>browser=${BROWSER}</arg>
 <arg>headless=${HEADLESS}</arg>
 <tag>BrowserControl</tag>
 <tag>Setter</tag>
 <doc>Create a new playwright Browser with specified options.</doc>
-<status status="PASS" start="2026-03-31T21:23:16.560640" elapsed="2.102410"/>
+<status status="PASS" start="2026-04-02T16:29:59.395710" elapsed="3.379406"/>
 </kw>
 <kw name="New Context" owner="Browser">
-<msg time="2026-03-31T21:23:18.667404" level="INFO">{
+<msg time="2026-04-02T16:30:02.780622" level="INFO">{
   "acceptDownloads": true,
   "bypassCSP": false,
   "forcedColors": "none",
@@ -28,70 +28,167 @@
     "height": 720
   }
 }</msg>
-<msg time="2026-03-31T21:23:18.709289" level="INFO">Successfully created context. </msg>
-<msg time="2026-03-31T21:23:18.709477" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
+<msg time="2026-04-02T16:30:02.844458" level="INFO">Successfully created context. </msg>
+<msg time="2026-04-02T16:30:02.844609" level="INFO">{'acceptDownloads': True, 'bypassCSP': False, 'forcedColors': 'none', 'ignoreHTTPSErrors': False, 'javaScriptEnabled': True, 'offline': False, 'reducedMotion': 'no-preference', 'serviceWorkers': 'allow', 'viewport': {'width': 1280, 'height': 720}}</msg>
 <arg>viewport={'width': 1280, 'height': 720}</arg>
 <tag>BrowserControl</tag>
 <tag>Setter</tag>
 <doc>Create a new BrowserContext with specified options.</doc>
-<status status="PASS" start="2026-03-31T21:23:18.663551" elapsed="0.046112"/>
+<status status="PASS" start="2026-04-02T16:30:02.775719" elapsed="0.069123"/>
 </kw>
 <kw name="New Page" owner="Browser">
-<msg time="2026-03-31T21:23:20.653835" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
+<msg time="2026-04-02T16:30:06.144194" level="INFO">Successfully initialized new page object and opened url: http://localhost:3000</msg>
 <arg>${BASE_URL}</arg>
 <tag>BrowserControl</tag>
 <tag>Setter</tag>
 <doc>Open a new Page.</doc>
-<status status="PASS" start="2026-03-31T21:23:18.710010" elapsed="1.944334"/>
+<status status="PASS" start="2026-04-02T16:30:02.845260" elapsed="3.299620"/>
 </kw>
 <doc>Öffnet den Browser und navigiert zur Startseite</doc>
-<status status="PASS" start="2026-03-31T21:23:16.559530" elapsed="4.095133"/>
+<status status="PASS" start="2026-04-02T16:29:59.394339" elapsed="6.750832"/>
 </kw>
-<test id="s1-t1" name="App ist erreichbar" line="10">
+<test id="s1-t1" name="Login-Button ist sichtbar wenn ausgeloggt" line="10">
+<kw name="Navigate To Page" owner="common">
+<kw name="Go To" owner="Browser">
+<msg time="2026-04-02T16:30:07.512331" level="INFO">Successfully opened URL http://localhost:3000/</msg>
+<arg>${BASE_URL}${path}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2026-04-02T16:30:06.827418" elapsed="0.685405"/>
+</kw>
+<kw name="Wait For Load State" owner="Browser">
+<msg time="2026-04-02T16:30:07.514994" level="INFO">Waiting page load to state to receive networkidle in 10000.0</msg>
+<msg time="2026-04-02T16:30:08.098266" level="INFO">Load state networkidle got in 10000</msg>
+<arg>networkidle</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits that the page reaches the required load state.</doc>
+<status status="PASS" start="2026-04-02T16:30:07.513212" elapsed="0.585220"/>
+</kw>
+<arg>/</arg>
+<doc>Navigiert zu einem bestimmten Pfad der App</doc>
+<status status="PASS" start="2026-04-02T16:30:06.826629" elapsed="1.271951"/>
+</kw>
 <kw name="Get Element" owner="Browser">
-<msg time="2026-03-31T21:23:21.026999" level="INFO">Locator found successfully.</msg>
-<arg>body</arg>
+<msg time="2026-04-02T16:30:08.139643" level="INFO">Locator found successfully.</msg>
+<arg>text=Login</arg>
 <tag>Getter</tag>
 <tag>PageContent</tag>
 <doc>Returns a reference to a Playwright [https://playwright.dev/docs/api/class-locator|Locator].</doc>
-<status status="PASS" start="2026-03-31T21:23:20.949171" elapsed="0.078161"/>
+<status status="PASS" start="2026-04-02T16:30:08.098973" elapsed="0.040963"/>
 </kw>
-<kw name="Get Title" owner="Browser">
-<msg time="2026-03-31T21:23:21.038837" level="INFO">Title: 'After Work - Poker Manager'</msg>
+<kw name="Wait For Elements State" owner="Browser">
+<msg time="2026-04-02T16:30:08.151497" level="INFO">Waited for Element with selector text=Login at state visible</msg>
+<arg>text=Login</arg>
+<arg>visible</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits for the element found by ``selector`` to satisfy state option.</doc>
+<status status="PASS" start="2026-04-02T16:30:08.141186" elapsed="0.010483"/>
+</kw>
+<doc>Prüft dass der Login-Button in der Navbar sichtbar ist</doc>
+<tag>auth</tag>
+<tag>smoke</tag>
+<status status="PASS" start="2026-04-02T16:30:06.145741" elapsed="2.006355"/>
+</test>
+<test id="s1-t2" name="NEU-Button ist nicht sichtbar wenn ausgeloggt" line="17">
+<kw name="Navigate To Page" owner="common">
+<kw name="Go To" owner="Browser">
+<msg time="2026-04-02T16:30:08.467076" level="INFO">Successfully opened URL http://localhost:3000/</msg>
+<arg>${BASE_URL}${path}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2026-04-02T16:30:08.170220" elapsed="0.297227"/>
+</kw>
+<kw name="Wait For Load State" owner="Browser">
+<msg time="2026-04-02T16:30:08.469249" level="INFO">Waiting page load to state to receive networkidle in 10000.0</msg>
+<msg time="2026-04-02T16:30:09.038866" level="INFO">Load state networkidle got in 10000</msg>
+<arg>networkidle</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits that the page reaches the required load state.</doc>
+<status status="PASS" start="2026-04-02T16:30:08.467817" elapsed="0.571306"/>
+</kw>
+<arg>/</arg>
+<doc>Navigiert zu einem bestimmten Pfad der App</doc>
+<status status="PASS" start="2026-04-02T16:30:08.169444" elapsed="0.869876"/>
+</kw>
+<kw name="Get Element Count" owner="Browser">
+<arg>text=NEU</arg>
 <arg>==</arg>
-<arg>After Work - Poker Manager</arg>
+<arg>0</arg>
 <tag>Assertion</tag>
 <tag>Getter</tag>
 <tag>PageContent</tag>
-<doc>Returns the title of the current page.</doc>
-<status status="PASS" start="2026-03-31T21:23:21.030342" elapsed="0.008737"/>
+<doc>Returns the count of elements found with ``selector``.</doc>
+<status status="PASS" start="2026-04-02T16:30:09.039905" elapsed="0.046088"/>
 </kw>
-<doc>Prüft ob die Startseite lädt und einen Titel hat</doc>
-<tag>smoke</tag>
-<status status="PASS" start="2026-03-31T21:23:20.654881" elapsed="0.384766"/>
+<doc>Prüft dass der NEU-Button ohne Admin-Login nicht existiert</doc>
+<tag>auth</tag>
+<status status="PASS" start="2026-04-02T16:30:08.162831" elapsed="0.924805"/>
+</test>
+<test id="s1-t3" name="Logout-Button ist nicht sichtbar wenn ausgeloggt" line="24">
+<kw name="Navigate To Page" owner="common">
+<kw name="Go To" owner="Browser">
+<msg time="2026-04-02T16:30:09.690869" level="INFO">Successfully opened URL http://localhost:3000/</msg>
+<arg>${BASE_URL}${path}</arg>
+<tag>BrowserControl</tag>
+<tag>Setter</tag>
+<doc>Navigates to the given ``url``.</doc>
+<status status="PASS" start="2026-04-02T16:30:09.118196" elapsed="0.572975"/>
+</kw>
+<kw name="Wait For Load State" owner="Browser">
+<msg time="2026-04-02T16:30:09.692503" level="INFO">Waiting page load to state to receive networkidle in 10000.0</msg>
+<msg time="2026-04-02T16:30:10.289904" level="INFO">Load state networkidle got in 10000</msg>
+<arg>networkidle</arg>
+<tag>PageContent</tag>
+<tag>Wait</tag>
+<doc>Waits that the page reaches the required load state.</doc>
+<status status="PASS" start="2026-04-02T16:30:09.691517" elapsed="0.598570"/>
+</kw>
+<arg>/</arg>
+<doc>Navigiert zu einem bestimmten Pfad der App</doc>
+<status status="PASS" start="2026-04-02T16:30:09.117142" elapsed="1.173083"/>
+</kw>
+<kw name="Get Element Count" owner="Browser">
+<arg>text=Logout</arg>
+<arg>==</arg>
+<arg>0</arg>
+<tag>Assertion</tag>
+<tag>Getter</tag>
+<tag>PageContent</tag>
+<doc>Returns the count of elements found with ``selector``.</doc>
+<status status="PASS" start="2026-04-02T16:30:10.290634" elapsed="0.020752"/>
+</kw>
+<doc>Prüft dass kein Logout-Button ohne aktive Session erscheint</doc>
+<tag>auth</tag>
+<status status="PASS" start="2026-04-02T16:30:09.100785" elapsed="1.211186"/>
 </test>
 <kw name="Close App" owner="common" type="TEARDOWN">
 <kw name="Close Browser" owner="Browser">
-<msg time="2026-03-31T21:23:21.861023" level="INFO">Closed browser</msg>
+<msg time="2026-04-02T16:30:11.695321" level="INFO">Closed browser</msg>
 <tag>BrowserControl</tag>
 <tag>Setter</tag>
 <doc>Closes the current browser.</doc>
-<status status="PASS" start="2026-03-31T21:23:21.052523" elapsed="0.808789"/>
+<status status="PASS" start="2026-04-02T16:30:10.326046" elapsed="1.369550"/>
 </kw>
 <doc>Schließt alle offenen Browser-Instanzen</doc>
-<status status="PASS" start="2026-03-31T21:23:21.052026" elapsed="0.809490"/>
+<status status="PASS" start="2026-04-02T16:30:10.325445" elapsed="1.370413"/>
 </kw>
-<status status="PASS" start="2026-03-31T21:23:16.170818" elapsed="5.690799"/>
+<status status="PASS" start="2026-04-02T16:29:58.627881" elapsed="13.068129"/>
 </suite>
 <statistics>
 <total>
-<stat pass="1" fail="0" skip="0">All Tests</stat>
+<stat pass="3" fail="0" skip="0">All Tests</stat>
 </total>
 <tag>
+<stat pass="3" fail="0" skip="0">auth</stat>
 <stat pass="1" fail="0" skip="0">smoke</stat>
 </tag>
 <suite>
-<stat name="01 Smoke" id="s1" pass="1" fail="0" skip="0">01 Smoke</stat>
+<stat name="02 Auth" id="s1" pass="3" fail="0" skip="0">02 Auth</stat>
 </suite>
 </statistics>
 <errors>
