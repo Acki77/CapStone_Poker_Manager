@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { calculatePoints } from "@/utils/pointsEngine";
+import { useSession } from "next-auth/react";
 
 export default function TournamentCard({ tournament, onDelete, onEdit }) {
+  const { data: session } = useSession();
   const year = tournament.date
     ? new Date(tournament.date).getFullYear()
     : "2026";
@@ -35,14 +37,17 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
         })}
       </PlayerList>
 
-      <ActionContainer>
-        <DeleteButton onClick={() => onDelete(tournament._id)}>
-          🗑️ Löschen
-        </DeleteButton>
-        <EditButton onClick={() => onEdit(tournament._id)}>
-          ✏️ Bearbeiten
-        </EditButton>
-      </ActionContainer>
+      {/* Buttons nur für eingeloggte Admins sichtbar */}
+      {session?.user?.isAdmin && (
+        <ActionContainer>
+          <DeleteButton onClick={() => onDelete(tournament._id)}>
+            🗑️ Löschen
+          </DeleteButton>
+          <EditButton onClick={() => onEdit(tournament._id)}>
+            ✏️ Bearbeiten
+          </EditButton>
+        </ActionContainer>
+      )}
     </Card>
   );
 }

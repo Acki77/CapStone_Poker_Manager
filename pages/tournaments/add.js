@@ -21,9 +21,11 @@ const ErrorMessage = styled.p`
 export default function AddTournamentPage() {
   const router = useRouter();
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function addTournament(dataToSend) {
     setError(null);
+    setIsSubmitting(true); // Button sofort deaktivieren
     try {
       const response = await fetch("/api/tournaments", {
         method: "POST",
@@ -36,9 +38,11 @@ export default function AddTournamentPage() {
       } else {
         const data = await response.json();
         setError(data.message || "Da lief was schief.");
+        setIsSubmitting(false); // Bei Fehler wieder aktivieren
       }
     } catch (err) {
       setError("Netzwerkfehler. Bitte später erneut versuchen.");
+      setIsSubmitting(false); // Bei Fehler wieder aktivieren
     }
   }
 
@@ -49,7 +53,7 @@ export default function AddTournamentPage() {
       {/* Fehlermeldung wird hier angezeigt, falls der API-Call schiefgeht */}
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <TournamentForm onSubmit={addTournament} buttonText="Speichern" />
+      <TournamentForm onSubmit={addTournament} buttonText="Speichern" isSubmitting={isSubmitting} />
     </>
   );
 }
