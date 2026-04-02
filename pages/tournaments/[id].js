@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useRouter } from "next/router";
 import TournamentForm from "@/components/TournamentForm";
 import dbConnect from "@/db/connect"; // Wichtig: Verbindung zur DB
@@ -5,13 +6,14 @@ import Tournament from "@/models/Tournament"; // Wichtig: Das Model
 
 export default function EditTournamentPage({ tournament }) {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sicherheitscheck: Falls tournament noch nicht da ist (z.B. während des Ladens)
   if (!tournament) {
     return <p>Lade Turnierdaten...</p>;
   }
 
   async function handleEditTournament(data) {
+    setIsSubmitting(true);
     try {
       const response = await fetch(`/api/tournaments/${tournament._id}`, {
         method: "PUT",
@@ -24,9 +26,11 @@ export default function EditTournamentPage({ tournament }) {
       } else {
         const errorData = await response.json();
         alert("Fehler beim Speichern: " + errorData.message);
+        setIsSubmitting(false);
       }
     } catch (error) {
       alert("Netzwerkfehler beim Aktualisieren.");
+      setIsSubmitting(false);
     }
   }
 
@@ -37,6 +41,7 @@ export default function EditTournamentPage({ tournament }) {
         onSubmit={handleEditTournament}
         initialData={tournament}
         buttonText="Änderungen speichern"
+        isSubmitting={isSubmitting}
       />
     </main>
   );

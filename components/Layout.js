@@ -2,9 +2,12 @@ import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Layout({ children }) {
   const router = useRouter();
+  // session enthält die User-Daten wenn eingeloggt, sonst null
+  const { data: session } = useSession();
 
   return (
     <>
@@ -24,14 +27,40 @@ export default function Layout({ children }) {
         </LogoWrapper>
 
         <NavList>
-          <li>
-            <StyledLink
-              href="/tournaments/add"
-              $active={router.pathname === "/tournaments/add"}
-            >
-              ➕ NEU
-            </StyledLink>
-          </li>
+          {/* NEU-Button nur sichtbar wenn Admin eingeloggt */}
+          {session?.user?.isAdmin && (
+            <li>
+              <StyledLink
+                href="/tournaments/add"
+                $active={router.pathname === "/tournaments/add"}
+              >
+                ➕ NEU
+              </StyledLink>
+            </li>
+          )}
+
+          {/* Eingeloggt: Profilbild, Name und Logout */}
+          {session ? (
+            <li>
+              <UserInfo>
+                {session.user.image && (
+                  <ProfileImage
+                    src={session.user.image}
+                    alt={session.user.name}
+                    width={32}
+                    height={32}
+                  />
+                )}
+                <span>{session.user.name}</span>
+                <AuthButton onClick={() => signOut()}>Logout</AuthButton>
+              </UserInfo>
+            </li>
+          ) : (
+            /* Ausgeloggt: Login-Button */
+            <li>
+              <AuthButton onClick={() => signIn("google")}>Login</AuthButton>
+            </li>
+          )}
         </NavList>
       </Nav>
 
@@ -94,4 +123,30 @@ const MainContent = styled.main`
   padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #efefef;
+`;
+
+const ProfileImage = styled(Image)`
+  border-radius: 50%;
+`;
+
+const AuthButton = styled.button`
+  background: transparent;
+  border: 1px solid #3498db;
+  border-radius: 6px;
+  color: #3498db;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  &:hover {
+    background: #3498db;
+    color: white;
+  }
 `;

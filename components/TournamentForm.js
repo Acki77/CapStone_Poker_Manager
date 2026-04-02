@@ -134,7 +134,7 @@ const ParticipantItem = styled.li`
   }
 `;
 
-export default function TournamentForm({ onSubmit, initialData, buttonText }) {
+export default function TournamentForm({ onSubmit, initialData, buttonText, isSubmitting }) {
   // Falls initialData da ist (Edit), nutzen wir sie. Sonst leere Strings (Add).
   const [formData, setFormData] = useState({
     date: initialData?.date ? initialData.date.split("T")[0] : "",
@@ -294,7 +294,9 @@ export default function TournamentForm({ onSubmit, initialData, buttonText }) {
           ))}
         </ParticipantList>
 
-        <SubmitButton type="submit">{buttonText || "Speichern"}</SubmitButton>
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Wird gespeichert..." : buttonText || "Speichern"}
+        </SubmitButton>
       </Form>
     </FormWrapper>
   );
