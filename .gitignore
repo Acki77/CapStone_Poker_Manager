@@ -42,3 +42,6 @@ next-env.d.ts
 
 # VS Code Options
 .vscode/
+
+# GitHub Issues Script (lokal, wird nicht ins Repo gepusht)
+create-issues.sh
