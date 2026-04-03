@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+
+const MONTHS = [
+  "Januar", "Februar", "März", "April", "Mai", "Juni",
+  "Juli", "August", "September", "Oktober", "November", "Dezember",
+];
 
 // Der Container, der das Formular auf Add/Edit zentriert
 const FormWrapper = styled.div`
@@ -35,6 +40,23 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border-color: #3498db;
+  }
+`;
+
+const Select = styled.select`
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #23272a;
+  background: #40444b;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  option:disabled {
+    color: #888;
   }
 `;
 
@@ -142,6 +164,41 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
     participants: initialData?.participants || [],
   });
 
+  const [usedMonths, setUsedMonths] = useState([]);
+
+  // Bereits verwendete Monate aus der API laden
+  useEffect(() => {
+    fetch("/api/tournaments")
+      .then((res) => res.json())
+      .then((tournaments) => {
+        const used = tournaments.map((t) => t.month);
+        setUsedMonths(used);
+      })
+      .catch(() => {}); // Fehler still ignorieren – Dropdown bleibt voll verfügbar
+  }, []);
+
+  // Wenn Datum gewählt wird: Monat automatisch vorauswählen
+  function handleDateChange(event) {
+    const dateValue = event.target.value;
+    setFormData((prev) => {
+      // Monat nur vorauswählen wenn noch kein Monat manuell gewählt wurde
+      if (dateValue && !prev.month) {
+        const monthIndex = new Date(dateValue).getMonth();
+        const detectedMonth = MONTHS[monthIndex];
+        // Wenn der erkannte Monat schon vergeben ist, nächsten freien suchen
+        const currentMonth = initialData?.month || null;
+        const effectiveUsed = usedMonths.filter((m) => m !== currentMonth);
+        if (!effectiveUsed.includes(detectedMonth)) {
+          return { ...prev, date: dateValue, month: detectedMonth };
+        }
+        // Nächsten freien Monat suchen (ab dem erkannten)
+        const nextFree = MONTHS.find((m) => !effectiveUsed.includes(m));
+        return { ...prev, date: dateValue, month: nextFree || "" };
+      }
+      return { ...prev, date: dateValue };
+    });
+  }
+
   // State für das Eingabefeld des "nächsten" Spielers
   const [newName, setNewName] = useState("");
   const [draggedIndex, setDraggedIndex] = useState(null);
@@ -155,9 +212,10 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
 
   function addPlayer() {
     if (newName.trim() !== "") {
+      const normalized = newName.trim().charAt(0).toUpperCase() + newName.trim().slice(1).toLowerCase();
       setFormData({
         ...formData,
-        participants: [...formData.participants, newName.trim()],
+        participants: [...formData.participants, normalized],
       });
       setNewName(""); // Feld wieder leeren
     }
@@ -213,20 +271,29 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
           id="date"
           name="date"
           value={formData.date}
-          onChange={handleChange}
+          onChange={handleDateChange}
           required
         />
 
         <Label htmlFor="month">Monat:</Label>
-        <Input
-          type="text"
+        <Select
           id="month"
           name="month"
           value={formData.month}
           onChange={handleChange}
           required
-          placeholder="z.B. März"
-        />
+        >
+          <option value="">– Monat wählen –</option>
+          {MONTHS.map((m) => {
+            const currentMonth = initialData?.month || null;
+            const isUsed = usedMonths.includes(m) && m !== currentMonth;
+            return (
+              <option key={m} value={m} disabled={isUsed}>
+                {m} {isUsed ? "✓" : ""}
+              </option>
+            );
+          })}
+        </Select>
 
         <Label>Neuen Teilnehmer hinzufügen:</Label>
         <AddPlayerControl>

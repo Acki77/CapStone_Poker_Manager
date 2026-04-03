@@ -7,15 +7,25 @@ export default function TournamentCard({ tournament, onDelete, onEdit }) {
   const year = tournament.date
     ? new Date(tournament.date).getFullYear()
     : "2026";
+  const formattedDate = tournament.date
+    ? new Date(tournament.date).toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : null;
   const participantCount = tournament.participants?.length || 0;
 
   return (
     <Card>
       <CardHeader>
         <TitleGroup>
-          <MonthYear>
-            {tournament.month} {year}
-          </MonthYear>
+          <div>
+            <MonthYear>
+              {tournament.month} {year}
+            </MonthYear>
+            {formattedDate && <DateLabel>{formattedDate}</DateLabel>}
+          </div>
           <ParticipantInfo>👥 {participantCount} Spieler</ParticipantInfo>
         </TitleGroup>
       </CardHeader>
@@ -77,6 +87,11 @@ const MonthYear = styled.h2`
   margin: 0;
   color: #f3d700;
   font-size: 1.3rem;
+`;
+
+const DateLabel = styled.span`
+  font-size: 0.8rem;
+  color: #b9bbbe;
 `;
 
 const ParticipantInfo = styled.span`

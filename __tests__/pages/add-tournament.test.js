@@ -30,27 +30,32 @@ describe("AddTournamentPage Logik", () => {
   it("sollte die Formulardaten an die API senden", async () => {
     const user = userEvent.setup();
 
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
+    // 1. Aufruf: GET /api/tournaments (Monatsliste im Form-useEffect)
+    // 2. Aufruf: POST /api/tournaments (Submit)
+    global.fetch = jest.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+      .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve({ message: "Turnier erstellt" }),
-      })
-    );
+      });
 
     render(<AddTournamentPage />);
 
     await user.type(screen.getByLabelText(/datum/i), "2026-05-20");
-    await user.type(screen.getByLabelText(/monat/i), "Mai");
+    await user.selectOptions(screen.getByLabelText(/monat/i), "Mai");
     await addParticipant(user, "Andreas");
     await addParticipant(user, "Felix");
 
     await user.click(screen.getByRole("button", { name: /speichern/i }));
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(global.fetch).toHaveBeenLastCalledWith(
       "/api/tournaments",
       expect.objectContaining({
         method: "POST",
@@ -67,18 +72,22 @@ describe("AddTournamentPage Logik", () => {
   it("sollte eine Fehlermeldung anzeigen, wenn der Server mit 400 antwortet", async () => {
     const user = userEvent.setup();
 
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
+    // 1. Aufruf: GET (Monatsliste), 2. Aufruf: POST schlägt fehl
+    global.fetch = jest.fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+      .mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: () => Promise.resolve({ message: "Ungültiges Datum" }),
-      })
-    );
+      });
 
     render(<AddTournamentPage />);
 
     await user.type(screen.getByLabelText(/datum/i), "2026-05-20");
-    await user.type(screen.getByLabelText(/monat/i), "Mai");
+    await user.selectOptions(screen.getByLabelText(/monat/i), "Mai");
     await addParticipant(user, "Andreas");
 
     await user.click(screen.getByRole("button", { name: /speichern/i }));
