@@ -34,6 +34,28 @@ function setAdminLoggedIn() {
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
+test("zeigt das Datum im deutschen Format an", () => {
+  // Arrange: ausgeloggt – Admin-Buttons spielen hier keine Rolle
+  setLoggedOut();
+
+  // Act: Karte mit einem Turnier rendern, das ein konkretes Datum hat
+  render(
+    <TournamentCard
+      tournament={mockTournament}
+      onDelete={() => {}}
+      onEdit={() => {}}
+    />
+  );
+
+  // Assert: "2026-03-26" (ISO-Format aus DB) muss als "26.03.2026" sichtbar sein.
+  //
+  // Warum dieser Test wichtig ist:
+  // Die Umwandlung passiert mit toLocaleDateString("de-DE") – das ist
+  // browser- und laufzeitabhängig. Wenn jemand das Format versehentlich
+  // ändert oder das Feld ganz entfernt, schlägt dieser Test sofort an.
+  expect(screen.getByText("26.03.2026")).toBeInTheDocument();
+});
+
 test("rendert den Namen des Turniersiegers und seine Punkte", () => {
   setLoggedOut();
   render(

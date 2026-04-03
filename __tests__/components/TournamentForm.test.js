@@ -2,6 +2,20 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TournamentForm from "@/components/TournamentForm";
 
+// fetch mocken: useEffect im Form lädt verwendete Monate – leere Liste zurückgeben
+beforeEach(() => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve([]),
+    })
+  );
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("TournamentForm", () => {
   test("fügt Teilnehmer einzeln hinzu und übergibt sie als Array beim Absenden", async () => {
     const user = userEvent.setup();
@@ -9,12 +23,13 @@ describe("TournamentForm", () => {
 
     render(<TournamentForm onSubmit={mockOnSubmit} buttonText="Speichern" />);
 
-    // Pflichtfelder ausfüllen
+    // Datum wählen
     await user.type(screen.getByLabelText(/Datum:/i), "2026-03-26");
-    await user.type(screen.getByLabelText(/Monat:/i), "März");
 
-    // Teilnehmer einzeln über das Eingabefeld + Button hinzufügen
-    // placeholder="eindeutiger Name..." identifiziert das Input eindeutig
+    // Monat aus Dropdown wählen
+    await user.selectOptions(screen.getByLabelText(/Monat:/i), "März");
+
+    // Teilnehmer einzeln hinzufügen
     const nameInput = screen.getByPlaceholderText(/eindeutiger Name/i);
     await user.type(nameInput, "Andreas");
     await user.click(screen.getByText("➕"));
@@ -25,7 +40,6 @@ describe("TournamentForm", () => {
     // Absenden
     await user.click(screen.getByRole("button", { name: /Speichern/i }));
 
-    // onSubmit muss mit Array aufgerufen worden sein
     expect(mockOnSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
         participants: ["Andreas", "Felix"],
@@ -33,9 +47,19 @@ describe("TournamentForm", () => {
     );
   });
 
+  test("normalisiert Teilnehmernamen beim Hinzufügen", async () => {
+    const user = userEvent.setup();
+
+    render(<TournamentForm onSubmit={jest.fn()} buttonText="Speichern" />);
+
+    const nameInput = screen.getByPlaceholderText(/eindeutiger Name/i);
+    await user.type(nameInput, "fRANK");
+    await user.click(screen.getByText("➕"));
+
+    expect(screen.getByText("Frank")).toBeInTheDocument();
+  });
+
   test("Submit-Button zeigt 'Wird gespeichert...' wenn isSubmitting=true", () => {
-    // isSubmitting=true wird direkt als Prop übergeben - kein Klick nötig
-    // Wir testen nur das visuelle Verhalten der Komponente
     render(
       <TournamentForm
         onSubmit={() => {}}
@@ -61,5 +85,18 @@ describe("TournamentForm", () => {
     const button = screen.getByRole("button", { name: /Speichern/i });
     expect(button).toBeInTheDocument();
     expect(button).not.toBeDisabled();
+  });
+
+  test("Monat-Dropdown zeigt alle 12 Monate an", async () => {
+    render(<TournamentForm onSubmit={jest.fn()} buttonText="Speichern" />);
+
+    const select = screen.getByLabelText(/Monat:/i);
+    const options = Array.from(select.querySelectorAll("option")).map(
+      (o) => o.value
+    );
+
+    expect(options).toContain("Januar");
+    expect(options).toContain("Juni");
+    expect(options).toContain("Dezember");
   });
 });
