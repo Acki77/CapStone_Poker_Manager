@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import TournamentList from "@/components/TournamentList";
 
-// Prüfen dass TournamentCard korrekt in TList gerendert wird.
-// mocken den Router, da TournamentList useRouter nutzt.
+// TournamentList rendert TournamentCard-Komponenten, die useRouter() und useSession()
+// aufrufen. Beide werden gemockt, damit der Test ohne laufenden Server auskommt.
 jest.mock("next/router", () => ({
   useRouter: () => ({
     push: jest.fn(),
@@ -11,19 +11,21 @@ jest.mock("next/router", () => ({
   }),
 }));
 
-// TournamentList rendert TournamentCard - die braucht useSession
 jest.mock("next-auth/react", () => ({
   useSession: jest.fn(() => ({ data: null })),
 }));
 
 describe("TournamentList", () => {
-  test("zeigt eine Nachricht an, wenn die Liste leer ist", () => {
+  test("zeigt eine Hinweismeldung an wenn keine Turniere vorhanden sind", () => {
+    // Leeres Array simuliert den Zustand direkt nach der Erstinstallation
+    // oder wenn alle Turniere gelöscht wurden
     render(<TournamentList tournaments={[]} />);
-    const message = screen.getByText(/Keine Turniere gefunden/i);
-    expect(message).toBeInTheDocument();
+    expect(screen.getByText(/Keine Turniere gefunden/i)).toBeInTheDocument();
   });
 
-  test("rendert die korrekte Anzahl an Turnieren", () => {
+  test("rendert für jedes Turnier eine Karte mit dem Monatsnamen", () => {
+    // getByRole('heading') prüft semantisch korrekte Überschriften-Elemente –
+    // bevorzugte Abfragestrategie in React Testing Library (accessibility-first)
     const mockTournaments = [
       { _id: "1", month: "Januar", date: "2026-01-01", participants: ["A"] },
       { _id: "2", month: "Februar", date: "2026-02-01", participants: ["B"] },
@@ -31,7 +33,6 @@ describe("TournamentList", () => {
 
     render(<TournamentList tournaments={mockTournaments} />);
 
-    // prüfen Monatsnamen als Überschriften (testet auch Barrierefreiheit)
     expect(screen.getByRole("heading", { name: /Januar/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Februar/i })).toBeInTheDocument();
   });

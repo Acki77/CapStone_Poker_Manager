@@ -1,35 +1,35 @@
 import { render, screen } from "@testing-library/react";
 import Layout from "@/components/Layout";
 
-// next/router mocken - Layout nutzt useRouter() für den aktiven Link
+// next/router wird gemockt, da die Layout-Komponente useRouter() für den aktiven
+// Navigationslink aufruft. Ohne Mock würde der Test mit einem Router-Fehler abbrechen.
 jest.mock("next/router", () => ({
   useRouter: () => ({ pathname: "/" }),
 }));
 
-// next-auth/react mocken - damit useSession() keine echte Session braucht
-// jest.fn() erstellt eine "leere" Funktion die wir pro Test beliebig steuern können
+// next-auth/react wird gemockt, damit useSession() keine echte Session benötigt.
+// jest.fn() erzeugt eine steuerbare Funktion, deren Rückgabewert pro Test gesetzt wird.
 jest.mock("next-auth/react", () => ({
   useSession: jest.fn(),
   signIn: jest.fn(),
   signOut: jest.fn(),
 }));
 
-// useSession importieren damit wir es in den Tests konfigurieren können
 import { useSession } from "next-auth/react";
 
-// --- Hilfsfunktion: simuliert einen ausgeloggten Zustand ---
+// Setzt den Session-Zustand auf "ausgeloggt" für den jeweiligen Test
 function setLoggedOut() {
   useSession.mockReturnValue({ data: null });
 }
 
-// --- Hilfsfunktion: simuliert einen eingeloggten Admin ---
+// Setzt den Session-Zustand auf einen eingeloggten Admin
 function setAdminLoggedIn() {
   useSession.mockReturnValue({
     data: {
       user: {
         name: "Phil Ivey",
         email: "phil@gmail.com",
-        image: null, // kein Bild, damit kein next/image Problem im Test
+        image: null,
         isAdmin: true,
       },
     },
@@ -41,37 +41,32 @@ function setAdminLoggedIn() {
 test("zeigt das Walhalla-Logo in der Navigation", () => {
   setLoggedOut();
   render(<Layout><div>Inhalt</div></Layout>);
-
   expect(screen.getByAltText(/Walhalla Logo/i)).toBeInTheDocument();
 });
 
-test("zeigt den Login-Button wenn ausgeloggt", () => {
+test("zeigt den Login-Button wenn kein Nutzer eingeloggt ist", () => {
   setLoggedOut();
   render(<Layout><div>Inhalt</div></Layout>);
-
-  // Ausgeloggt: Login-Button muss sichtbar sein
   expect(screen.getByText("Login")).toBeInTheDocument();
 });
 
-test("versteckt den NEU-Button wenn ausgeloggt", () => {
+test("blendet den NEU-Button aus wenn kein Nutzer eingeloggt ist", () => {
+  // queryByText gibt null zurück wenn das Element fehlt –
+  // getByText würde einen Fehler werfen und ist für Abwesenheitsprüfungen ungeeignet
   setLoggedOut();
   render(<Layout><div>Inhalt</div></Layout>);
-
-  // queryByText gibt null zurück wenn Element nicht da ist (kein Fehler wie getByText)
   expect(screen.queryByText(/NEU/i)).not.toBeInTheDocument();
 });
 
-test("zeigt den NEU-Button wenn Admin eingeloggt", () => {
+test("zeigt den NEU-Button wenn ein Admin eingeloggt ist", () => {
   setAdminLoggedIn();
   render(<Layout><div>Inhalt</div></Layout>);
-
   expect(screen.getByText(/NEU/i)).toBeInTheDocument();
 });
 
-test("zeigt Name und Logout-Button wenn Admin eingeloggt", () => {
+test("zeigt Nutzername und Logout-Button wenn ein Admin eingeloggt ist", () => {
   setAdminLoggedIn();
   render(<Layout><div>Inhalt</div></Layout>);
-
   expect(screen.getByText("Phil Ivey")).toBeInTheDocument();
   expect(screen.getByText("Logout")).toBeInTheDocument();
 });
