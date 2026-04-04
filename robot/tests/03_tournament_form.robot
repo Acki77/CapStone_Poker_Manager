@@ -53,21 +53,21 @@ Datum-Eingabe wählt Monat automatisch vor
 
     Navigate To Page    /tournaments/add
 
-    # Sicherstellen dass noch kein Monat gewählt ist (Platzhalter aktiv)
-    ${initial}=    Get Selected Options    select#month
-    Should Be Empty    ${initial}
+    # Ausgangszustand: value-Property des Select-Elements ist leer (Platzhalter aktiv)
+    # Get Property liest eine DOM-Property direkt aus – zuverlässiger als Get Selected Options
+    # für den Leerstring-Check, da Get Selected Options immer die Platzhalter-Option liefert
+    ${initial}=    Get Property    select#month    value
+    Should Be Equal    ${initial}    ${EMPTY}
 
     # Datum eingeben: 20. Mai 2026 → getMonth() = 4 → MONTHS[4] = "Mai"
-    # Fill Text ersetzt den Inhalt des Feldes komplett (kein Tippen nötig)
     Fill Text    input#date    2026-05-20
 
-    # Kurz warten bis React den State aktualisiert hat
+    # Wartet bis React den State aktualisiert und das DOM neu gerendert hat
     Sleep    0.3s
 
-    # Jetzt muss "Mai" im Dropdown ausgewählt sein
-    ${selected}=    Get Selected Options    select#month
-    Should Not Be Empty    ${selected}
-    Should Be Equal    ${selected}[0][value]    Mai
+    # value-Property muss jetzt "Mai" enthalten
+    ${selected}=    Get Property    select#month    value
+    Should Be Equal    ${selected}    Mai
 
 
 *** Keywords ***
