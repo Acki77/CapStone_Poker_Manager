@@ -16,6 +16,7 @@ export default function YearlyRanking({ tournaments }) {
             <Th>Platz</Th>
             <Th>Name</Th>
             <Th style={{ textAlign: "right" }}>Punkte</Th>
+            <Th style={{ textAlign: "right" }}>Anteil %</Th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +30,13 @@ export default function YearlyRanking({ tournaments }) {
               <Td>{player.name}</Td>
               <Td style={{ textAlign: "right", fontWeight: "bold" }}>
                 {player.points}
+              </Td>
+              <Td style={{ textAlign: "right" }}>
+                {player.yearlyPercentage !== null
+                  ? `${player.yearlyPercentage.toFixed(
+                      player.yearlyPercentage % 1 === 0 ? 0 : 1
+                    )} %`
+                  : ""}
               </Td>
             </StyledTableRow>
           ))}
