@@ -50,6 +50,30 @@ Gleichstand in der Jahrestabelle zeigt geteilte Plätze
     ${platz3_count}=    Get Element Count    css=table >> text=3.
     Should Be True    ${platz3_count} >= 1
 
+Gleichstand zeigt gemittelten Jahresanteil in der Tabelle
+    [Documentation]    Prüft ob der Jahresanteil bei geteilten Plätzen korrekt gemittelt wird.
+    ...
+    ...                Tester1 und Tester3 teilen Platz 1 (Positionen 0 und 1):
+    ...                  (25 % + 20 %) / 2 = 22,5 % → beide Spieler zeigen "22,5 %"
+    ...
+    ...                Tester2 belegt Arrayposition 2 (displayRank 3):
+    ...                  YEARLY_PERCENTAGES[2] = 13,5 % → Tester2 zeigt "13,5 %"
+    [Tags]    yearly-ranking    percentage    tie
+    Navigate To Page    /
+
+    # Zeile von Tester1 finden und letzte Zelle (Anteil %) prüfen
+    ${tester1_row}=    Get Element    css=table tr:has-text("Tester1")
+    ${tester1_pct}=    Get Text    css=table tr:has-text("Tester1") >> td:last-child
+    Should Be Equal    ${tester1_pct}    22,5 %
+
+    # Tester3 muss denselben Anteil haben
+    ${tester3_pct}=    Get Text    css=table tr:has-text("Tester3") >> td:last-child
+    Should Be Equal    ${tester3_pct}    22,5 %
+
+    # Tester2 belegt Position 2 der Prozenttabelle unabhängig vom displayRank
+    ${tester2_pct}=    Get Text    css=table tr:has-text("Tester2") >> td:last-child
+    Should Be Equal    ${tester2_pct}    13,5 %
+
 
 *** Keywords ***
 Testdaten Anlegen Und Browser Öffnen

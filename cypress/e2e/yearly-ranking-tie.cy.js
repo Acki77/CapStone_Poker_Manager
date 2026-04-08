@@ -64,6 +64,27 @@ describe("Jahrestabelle – Gleichstandsanzeige", () => {
     });
   });
 
+  it("zeigt für beide Spieler mit Gleichstand den gemittelten Jahresanteil an", () => {
+    // Tester1 und Tester3 teilen Platz 1 (Positionen 0 und 1).
+    // Erwarteter Anteil: (25 % + 20 %) / 2 = 22,5 % – für beide identisch.
+    // Das Komma im Anzeigewert kommt durch .replace(".", ",") in YearlyRanking.js.
+    cy.contains("tr", "Tester1")
+      .find("td:last-child")
+      .should("contain", "22,5 %");
+
+    cy.contains("tr", "Tester3")
+      .find("td:last-child")
+      .should("contain", "22,5 %");
+  });
+
+  it("zeigt für den Spieler auf übersprungenen Platz 3 den Anteil von Position 2 an", () => {
+    // Tester2 belegt Arrayposition 2, unabhängig vom displayRank 3.
+    // YEARLY_PERCENTAGES[2] = 13,5 %.
+    cy.contains("tr", "Tester2")
+      .find("td:last-child")
+      .should("contain", "13,5 %");
+  });
+
   it("überspringt einen Platz nach dem geteilten Rang", () => {
     // Liest den numerischen Rang von Tester1 und Tester2 aus und prüft
     // dass Tester2 genau zwei Plätze hinter Tester1 liegt (ein Platz übersprungen).

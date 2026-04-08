@@ -50,23 +50,55 @@ export function getYearlyRanking(tournaments) {
     .sort((a, b) => b.points - a.points);
 }
 
+// Prozentualer Anteil am Jahrespunktpool für die Top 8.
+// Index 0 = Platz 1, Index 1 = Platz 2, usw.
+// Ab Position 8 (Platz 9+) wird 0 verwendet.
+const YEARLY_PERCENTAGES = [25, 20, 13.5, 13.5, 10, 8, 6, 4];
+
 /**
- * Wendet die Gleichstandsregel an: Spieler mit gleicher Punktzahl erhalten denselben Rang
+ * Wendet die Gleichstandsregel an und berechnet den prozentualen Jahresanteil.
+ * Bei geteilten Plätzen werden die Prozente der belegten Positionen gemittelt:
+ * Platz 1 geteilt → (25 + 20) / 2 = 22,5 % für beide Spieler.
  * @param {Array} tournaments - Alle Turnier-Daten
- * @returns {Array} Sortiertes Array mit {name, points, displayRank}
+ * @returns {Array} Sortiertes Array mit {name, points, displayRank, yearlyPercentage}
  */
 export function getProcessedRanking(tournaments) {
   const rawRanking = getYearlyRanking(tournaments);
 
-  return rawRanking.reduce((acc, player, index) => {
-    const previousPlayer = acc[index - 1];
-    let displayRank;
-    if (previousPlayer && player.points === previousPlayer.points) {
-      displayRank = previousPlayer.displayRank;
-    } else {
-      displayRank = index + 1;
-    }
+  // Erster Durchlauf: displayRank vergeben
+  const withRanks = rawRanking.reduce((acc, player, index) => {
+    const prev = acc[index - 1];
+    const displayRank =
+      prev && player.points === prev.points ? prev.displayRank : index + 1;
     acc.push({ ...player, displayRank });
     return acc;
   }, []);
+
+  // Zweiter Durchlauf: Prozente berechnen – Gleichstandsgruppen zusammenfassen
+  let i = 0;
+  while (i < withRanks.length) {
+    const currentRank = withRanks[i].displayRank;
+
+    // Alle Spieler mit demselben Rang finden
+    let j = i;
+    while (j < withRanks.length && withRanks[j].displayRank === currentRank) {
+      j++;
+    }
+
+    // Summe der Prozente für die belegten Positionen (i bis j-1)
+    const totalPct = withRanks
+      .slice(i, j)
+      .reduce((sum, _, k) => sum + (YEARLY_PERCENTAGES[i + k] || 0), 0);
+
+    // Gleichmäßige Verteilung auf alle Spieler der Gruppe
+    const avgPct = Math.round((totalPct / (j - i)) * 10) / 10;
+
+    for (let k = i; k < j; k++) {
+      withRanks[k].yearlyPercentage = avgPct > 0 ? avgPct : null;
+    }
+
+    i = j;
+  }
+
+  return withRanks;
 }

@@ -3,6 +3,10 @@
 # Robot Framework – generierte Testergebnisse
 /robot/results/
 
+# Präsentation – generierte Dateien, nicht im Repo
+/scripts/create_presentation.py
+/*.pptx
+
 # dependencies
 /node_modules
 /.pnp
