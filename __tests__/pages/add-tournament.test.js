@@ -11,10 +11,6 @@ jest.mock("next/router", () => ({
   }),
 }));
 
-// AddTournamentPage rendert TournamentForm → TournamentCard nicht direkt,
-// aber TournamentForm selbst braucht kein useSession - kein Mock nötig hier.
-// AddTournamentPage rendert TournamentForm das kein useSession nutzt - OK.
-
 // Hilfsfunktion: Teilnehmer über das neue Eingabefeld hinzufügen
 async function addParticipant(user, name) {
   const nameInput = screen.getByPlaceholderText(/eindeutiger Name/i);
@@ -27,7 +23,7 @@ describe("AddTournamentPage Logik", () => {
     jest.clearAllMocks();
   });
 
-  it("sollte die Formulardaten an die API senden", async () => {
+  it("sendet die Formulardaten als POST-Request an die API", async () => {
     const user = userEvent.setup();
 
     // 1. Aufruf: GET /api/tournaments (Monatsliste im Form-useEffect)
@@ -69,7 +65,7 @@ describe("AddTournamentPage Logik", () => {
     );
   });
 
-  it("sollte eine Fehlermeldung anzeigen, wenn der Server mit 400 antwortet", async () => {
+  it("zeigt die Server-Fehlermeldung an wenn die API mit 400 antwortet", async () => {
     const user = userEvent.setup();
 
     // 1. Aufruf: GET (Monatsliste), 2. Aufruf: POST schlägt fehl
