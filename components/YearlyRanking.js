@@ -70,7 +70,7 @@ const StyledTable = styled.table`
 const StyledTableRow = styled.tr`
   border-bottom: 1px solid #40444b;
   background-color: ${(props) =>
-    props.$rank <= 10 ? "rgba(52, 152, 219, 0.08)" : "transparent"};
+    props.$rank <= 8 ? "rgba(52, 152, 219, 0.08)" : "transparent"};
   transition: background-color 0.2s;
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
