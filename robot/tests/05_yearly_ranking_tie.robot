@@ -24,15 +24,16 @@ Gleichstand in der Jahrestabelle zeigt geteilte Plätze
     ...
     ...                Ausgangslage: Zwei Turniere mit je 3 Testteilnehmern in
     ...                umgekehrter Reihenfolge (Tester1/Tester2/Tester3 und Tester3/Tester2/Tester1).
-    ...                Punkte nach F1-Formel + TN-Anzahl + Anwesenheitsbonus:
-    ...                  Tester1: (25+3+5) + (15+3+5) = 56 Punkte
-    ...                  Tester3: (15+3+5) + (25+3+5) = 56 Punkte → Gleichstand!
-    ...                  Tester2: (18+3+5) + (18+3+5) = 52 Punkte
+    ...                Punkte nach F1-Formel + TN-Punkte (linear) + Anwesenheitsbonus:
+    ...                  Tester1: (25+3+5) + (15+1+5) = 54 Punkte
+    ...                  Tester3: (15+1+5) + (25+3+5) = 54 Punkte → Gleichstand!
+    ...                  Tester2: (18+2+5) + (18+2+5) = 50 Punkte
+    ...                  TN-Punkte linear: Sieger=N, Zweiter=N-1, Letzter=1
     ...
     ...                Erwartetes Ergebnis in der Jahrestabelle:
-    ...                  Platz 1: Tester1 (56 Pkt.)
-    ...                  Platz 1: Tester3 (56 Pkt.)  ← geteilter Platz
-    ...                  Platz 3: Tester2 (52 Pkt.)  ← Platz 2 wird übersprungen
+    ...                  Platz 1: Tester1 (54 Pkt.)
+    ...                  Platz 1: Tester3 (54 Pkt.)  ← geteilter Platz
+    ...                  Platz 3: Tester2 (50 Pkt.)  ← Platz 2 wird übersprungen
     [Tags]    yearly-ranking    tie
     Navigate To Page    /
 

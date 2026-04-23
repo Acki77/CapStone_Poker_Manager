@@ -2,7 +2,7 @@
  * Berechnet die Punkte für einen einzelnen Teilnehmer nach F1-Logik
  * @param {number} rank - Der Platz (0 = 1. Platz, 1 = 2. Platz, etc.)
  * @param {number} totalParticipants - Anzahl aller Teilnehmer im Turnier
- * @returns {number} Die Summe aus Platzierung + TN-Anzahl + Anwesenheit
+ * @returns {number} Die Summe aus Platzierung + TN-Punkte + Anwesenheit
  */
 export function calculatePoints(rank, totalParticipants) {
   // 1. Die Platzierungspunkte (Formel 1 System)
@@ -11,8 +11,9 @@ export function calculatePoints(rank, totalParticipants) {
   // Falls jemand 11. wird, bekommt er 0 Punkte aus der Tabelle
   const rankPoints = rankPointsTable[rank] || 0;
 
-  // 2. TN-Punkte (1 Pkt pro Mitspieler)
-  const participantPoints = totalParticipants;
+  // 2. TN-Punkte: lineare Skala von 1 (Letzter) bis N (Sieger)
+  //    Beispiel bei 10 TN: Sieger = 10, Letzter = 1
+  const participantPoints = totalParticipants - rank;
 
   // 3. Anwesenheits-Bonus (Fixstarter-Punkte)
   const attendancePoints = 5;

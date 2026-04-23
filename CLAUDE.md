@@ -275,7 +275,7 @@ const mockTournament = {
 it('zeigt den Gewinner und seine Punkte an', () => {
   render(<TournamentCard tournament={mockTournament} />)
   expect(screen.getByText('Phil Ivey')).toBeInTheDocument()
-  // Punkte werden dynamisch berechnet: 25 (Rang 1) + 3 (3 Teilnehmer) + 5 (Anwesenheit)
+  // Punkte werden dynamisch berechnet: 25 (Rang 1) + 3 (TN-Punkte: N-rank = 3-0) + 5 (Anwesenheit)
   expect(screen.getByText('33 Pts')).toBeInTheDocument()
 })
 ```
