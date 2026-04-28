@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 // Liste der Google-Accounts die Admin-Rechte haben
 const ADMIN_EMAILS = [
   "acki1977@googlemail.com", // deine Google-Email hier eintragen
-  "andreas-email@gmail.com", // Andreas' Email hier eintragen
+  "astrutz@asits.de", // Andreas' Email hier eintragen
 ];
 
 export default NextAuth({
