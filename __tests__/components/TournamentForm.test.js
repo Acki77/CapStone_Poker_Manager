@@ -47,7 +47,7 @@ describe("TournamentForm", () => {
     );
   });
 
-  test("normalisiert Teilnehmernamen beim Hinzufügen", async () => {
+  test("normalisiert Vorname beim Hinzufügen", async () => {
     const user = userEvent.setup();
 
     render(<TournamentForm onSubmit={jest.fn()} buttonText="Speichern" />);
@@ -57,6 +57,19 @@ describe("TournamentForm", () => {
     await user.click(screen.getByText("➕"));
 
     expect(screen.getByText("Frank")).toBeInTheDocument();
+  });
+
+  test("normalisiert Vor- und Nachname beim Hinzufügen", async () => {
+    // Prüft dass jedes Wort einzeln normalisiert wird – nicht nur das erste
+    const user = userEvent.setup();
+
+    render(<TournamentForm onSubmit={jest.fn()} buttonText="Speichern" />);
+
+    const nameInput = screen.getByPlaceholderText(/eindeutiger Name/i);
+    await user.type(nameInput, "fRANK müLLER");
+    await user.click(screen.getByText("➕"));
+
+    expect(screen.getByText("Frank Müller")).toBeInTheDocument();
   });
 
   test("Submit-Button zeigt 'Wird gespeichert...' wenn isSubmitting=true", () => {

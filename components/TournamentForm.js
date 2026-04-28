@@ -212,7 +212,10 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
 
   function addPlayer() {
     if (newName.trim() !== "") {
-      const normalized = newName.trim().charAt(0).toUpperCase() + newName.trim().slice(1).toLowerCase();
+      const normalized = newName.trim().split(' ')
+        .filter((word) => word.length > 0)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
       setFormData({
         ...formData,
         participants: [...formData.participants, normalized],
