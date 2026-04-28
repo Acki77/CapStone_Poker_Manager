@@ -60,6 +60,46 @@ const Select = styled.select`
   }
 `;
 
+// Wrapper um Eingabefeld + Dropdown – position:relative damit das Dropdown
+// direkt unter dem Eingabefeld erscheint (position:absolute im Child)
+const AutocompleteWrapper = styled.div`
+  position: relative;
+  flex: 1;
+`;
+
+// Die Vorschlagsliste erscheint direkt unter dem Eingabefeld
+const SuggestionList = styled.ul`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #40444b;
+  border: 1px solid #3498db;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+`;
+
+const SuggestionItem = styled.li`
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    background: #3498db;
+  }
+`;
+
+const HintText = styled.small`
+  color: #888;
+  font-size: 0.78rem;
+  margin-top: -0.8rem;
+`;
+
 const AddPlayerControl = styled.div`
   display: flex;
   gap: 0.8rem;
@@ -201,6 +241,43 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
 
   // State für das Eingabefeld des "nächsten" Spielers
   const [newName, setNewName] = useState("");
+
+  // Autocomplete: Liste der Vorschläge aus der API
+  const [suggestions, setSuggestions] = useState([]);
+
+  // Soft-Validierung: Hinweis wenn kein Leerzeichen im Namen (= kein Nachname)
+  const [nameHint, setNameHint] = useState("");
+
+  // Autocomplete: Bei Eingabe die API nach passenden Namen befragen
+  async function handleNameInput(event) {
+    const value = event.target.value;
+    setNewName(value);
+    setNameHint("");
+
+    if (value.trim().length < 2) {
+      // Unter 2 Zeichen keine Suche starten – zu viele Treffer
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/players?search=${encodeURIComponent(value)}`);
+      const names = await res.json();
+
+      // Bereits hinzugefügte Teilnehmer aus den Vorschlägen ausblenden
+      const filtered = names.filter((n) => !formData.participants.includes(n));
+      setSuggestions(filtered);
+    } catch {
+      setSuggestions([]);
+    }
+  }
+
+  // Autocomplete: Vorschlag auswählen → Feld befüllen, Dropdown schließen
+  function selectSuggestion(name) {
+    setNewName(name);
+    setSuggestions([]);
+  }
+
   const [draggedIndex, setDraggedIndex] = useState(null);
   // Speichert den Index des Elements, ÜBER dem wir gerade schweben
   const [dragOverIndex, setDragOverIndex] = useState(null);
@@ -211,17 +288,37 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
   }
 
   function addPlayer() {
-    if (newName.trim() !== "") {
-      const normalized = newName.trim().split(' ')
-        .filter((word) => word.length > 0)
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-      setFormData({
-        ...formData,
-        participants: [...formData.participants, normalized],
-      });
-      setNewName(""); // Feld wieder leeren
+    if (newName.trim() === "") return;
+
+    // Soft-Validierung: Hinweis wenn kein Nachname erkennbar (kein Leerzeichen)
+    if (!newName.trim().includes(" ")) {
+      setNameHint("Bitte Vor- und Nachname eingeben, z.B. Frank Ackermann");
+      return;
     }
+
+    const normalized = newName.trim().split(" ")
+      .filter((word) => word.length > 0)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+
+    setFormData({
+      ...formData,
+      participants: [...formData.participants, normalized],
+    });
+    setNewName("");
+    setSuggestions([]);
+    setNameHint("");
+
+    // Neuen Namen automatisch in der Players-Collection speichern.
+    // Bereits vorhandene Spieler werden von der API still ignoriert (created: false).
+    const parts = normalized.split(" ");
+    const firstName = parts.slice(0, -1).join(" ");
+    const lastName = parts[parts.length - 1];
+    fetch("/api/players", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName, lastName }),
+    }).catch(() => {}); // Fehler still ignorieren – Turnier-Speichern bleibt davon unabhängig
   }
 
   function moveParticipant(oldIndex, newIndex) {
@@ -298,24 +395,41 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
           })}
         </Select>
 
-        <Label>Neuen Teilnehmer hinzufügen:</Label>
+        <Label>Neuen Teilnehmer hinzufügen (Vor- und Nachname):</Label>
         <AddPlayerControl>
-          <Input
-            type="text"
-            value={newName}
-            onChange={(event) => setNewName(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                addPlayer();
-              }
-            }}
-            placeholder="eindeutiger Name..."
-          />
+          <AutocompleteWrapper>
+            <Input
+              type="text"
+              value={newName}
+              onChange={handleNameInput}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  addPlayer();
+                }
+                // Dropdown mit Escape schließen
+                if (event.key === "Escape") setSuggestions([]);
+              }}
+              placeholder="z.B. Frank Ackermann"
+              autoComplete="off"
+            />
+            {/* Dropdown nur anzeigen wenn Vorschläge vorhanden */}
+            {suggestions.length > 0 && (
+              <SuggestionList>
+                {suggestions.map((name) => (
+                  <SuggestionItem key={name} onMouseDown={() => selectSuggestion(name)}>
+                    {name}
+                  </SuggestionItem>
+                ))}
+              </SuggestionList>
+            )}
+          </AutocompleteWrapper>
           <ControlButton type="button" onClick={addPlayer}>
             ➕
           </ControlButton>
         </AddPlayerControl>
+        {/* Soft-Validierungshinweis – erscheint nur wenn kein Nachname erkannt */}
+        {nameHint && <HintText>{nameHint}</HintText>}
 
         <Label>Teilnehmer & Platzierung</Label>
         <ParticipantList>
