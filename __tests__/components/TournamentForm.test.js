@@ -77,6 +77,34 @@ describe("TournamentForm", () => {
     expect(screen.queryByText(/1\./)).not.toBeInTheDocument();
   });
 
+  test("übernimmt Vorschlag per Enter nach ArrowDown-Navigation", async () => {
+    // Simuliert: Tippen → ArrowDown → Enter → Vorschlag im Feld
+    global.fetch = jest.fn((url) => {
+      if (url.includes("/api/players?search=Fra")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(["Frank Ackermann", "Franz Müller"]),
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
+    });
+
+    const user = userEvent.setup();
+    render(<TournamentForm onSubmit={jest.fn()} buttonText="Speichern" />);
+
+    const nameInput = screen.getByPlaceholderText(/z\.B\. Frank Ackermann/i);
+    await user.type(nameInput, "Fra");
+
+    // Warten bis Vorschläge erscheinen
+    await waitFor(() => expect(screen.getByText("Frank Ackermann")).toBeInTheDocument());
+
+    // ArrowDown → erster Eintrag aktiv, Enter → übernehmen
+    await user.keyboard("{ArrowDown}{Enter}");
+
+    // Eingabefeld muss den ausgewählten Namen enthalten
+    expect(nameInput).toHaveValue("Frank Ackermann");
+  });
+
   test("zeigt Autocomplete-Vorschläge bei Eingabe", async () => {
     // fetch für /api/players gibt Vorschläge zurück
     global.fetch = jest.fn((url) => {

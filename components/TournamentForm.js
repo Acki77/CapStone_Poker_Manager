@@ -85,10 +85,13 @@ const SuggestionList = styled.ul`
   overflow-y: auto;
 `;
 
+// $isActive: per Tastatur markierter Eintrag – gleiche Farbe wie Hover
+// Das $-Präfix verhindert dass React das Attribut ans DOM-Element weitergibt
 const SuggestionItem = styled.li`
   padding: 0.6rem 0.8rem;
   cursor: pointer;
   color: white;
+  background: ${(props) => (props.$isActive ? "#3498db" : "transparent")};
   &:hover {
     background: #3498db;
   }
@@ -245,6 +248,9 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
   // Autocomplete: Liste der Vorschläge aus der API
   const [suggestions, setSuggestions] = useState([]);
 
+  // Autocomplete: Index des aktuell per Tastatur markierten Vorschlags (-1 = keiner)
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+
   // Soft-Validierung: Hinweis wenn kein Leerzeichen im Namen (= kein Nachname)
   const [nameHint, setNameHint] = useState("");
 
@@ -257,6 +263,7 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
     if (value.trim().length < 2) {
       // Unter 2 Zeichen keine Suche starten – zu viele Treffer
       setSuggestions([]);
+      setActiveSuggestionIndex(-1);
       return;
     }
 
@@ -276,6 +283,40 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
   function selectSuggestion(name) {
     setNewName(name);
     setSuggestions([]);
+    setActiveSuggestionIndex(-1);
+  }
+
+  // Autocomplete: Tastaturnavigation im Dropdown
+  // ArrowDown → nächster Eintrag, ArrowUp → vorheriger Eintrag, Enter → auswählen
+  function handleKeyDown(event) {
+    if (suggestions.length === 0) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        addPlayer();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault(); // verhindert Cursor-Bewegung im Textfeld
+      setActiveSuggestionIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : prev
+      );
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveSuggestionIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      if (activeSuggestionIndex >= 0) {
+        // Vorschlag per Enter übernehmen
+        selectSuggestion(suggestions[activeSuggestionIndex]);
+      } else {
+        addPlayer();
+      }
+    } else if (event.key === "Escape") {
+      setSuggestions([]);
+      setActiveSuggestionIndex(-1);
+    }
   }
 
   const [draggedIndex, setDraggedIndex] = useState(null);
@@ -402,22 +443,20 @@ export default function TournamentForm({ onSubmit, initialData, buttonText, isSu
               type="text"
               value={newName}
               onChange={handleNameInput}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  addPlayer();
-                }
-                // Dropdown mit Escape schließen
-                if (event.key === "Escape") setSuggestions([]);
-              }}
+              onKeyDown={handleKeyDown}
               placeholder="z.B. Frank Ackermann"
               autoComplete="off"
             />
             {/* Dropdown nur anzeigen wenn Vorschläge vorhanden */}
             {suggestions.length > 0 && (
               <SuggestionList>
-                {suggestions.map((name) => (
-                  <SuggestionItem key={name} onMouseDown={() => selectSuggestion(name)}>
+                {suggestions.map((name, index) => (
+                  <SuggestionItem
+                    key={name}
+                    $isActive={index === activeSuggestionIndex}
+                    onMouseDown={() => selectSuggestion(name)}
+                    onMouseEnter={() => setActiveSuggestionIndex(index)}
+                  >
                     {name}
                   </SuggestionItem>
                 ))}
