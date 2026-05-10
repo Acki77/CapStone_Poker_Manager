@@ -52,3 +52,7 @@ next-env.d.ts
 
 # GitHub Issues Script (lokal, wird nicht ins Repo gepusht)
 create-issues.sh
+
+# Persönliche Dokumente (Bewerbungen, CV, Anschreiben, Notizen)
+# Alles in _personal/ wird NIEMALS in GitHub gepusht
+/_personal/
