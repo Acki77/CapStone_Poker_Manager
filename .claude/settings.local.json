@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(mkdir -p \"D:/web-bootcamp/ibm-assessment\")",
+      "Read(//d/web-bootcamp/**)",
+      "Bash(npm test *)",
+      "Bash(npx cypress *)",
+      "Bash(robot --outputdir robot/results robot/tests/05_yearly_ranking_tie.robot)"
     ]
   }
 }

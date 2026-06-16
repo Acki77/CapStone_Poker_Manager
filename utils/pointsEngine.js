@@ -54,7 +54,7 @@ export function getYearlyRanking(tournaments) {
 // Prozentualer Anteil am Jahrespunktpool für die Top 8.
 // Index 0 = Platz 1, Index 1 = Platz 2, usw.
 // Ab Position 8 (Platz 9+) wird 0 verwendet.
-const YEARLY_PERCENTAGES = [25, 20, 13.5, 13.5, 10, 8, 6, 4];
+const YEARLY_PERCENTAGES = [25, 20, 15, 12, 10, 8, 6, 4];
 
 /**
  * Wendet die Gleichstandsregel an und berechnet den prozentualen Jahresanteil.

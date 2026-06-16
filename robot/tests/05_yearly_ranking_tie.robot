@@ -58,7 +58,7 @@ Gleichstand zeigt gemittelten Jahresanteil in der Tabelle
     ...                  (25 % + 20 %) / 2 = 22,5 % → beide Spieler zeigen "22,5 %"
     ...
     ...                Tester2 belegt Arrayposition 2 (displayRank 3):
-    ...                  YEARLY_PERCENTAGES[2] = 13,5 % → Tester2 zeigt "13,5 %"
+    ...                  YEARLY_PERCENTAGES[2] = 15 % → Tester2 zeigt "15 %"
     [Tags]    yearly-ranking    percentage    tie
     Navigate To Page    /
 
@@ -73,7 +73,7 @@ Gleichstand zeigt gemittelten Jahresanteil in der Tabelle
 
     # Tester2 belegt Position 2 der Prozenttabelle unabhängig vom displayRank
     ${tester2_pct}=    Get Text    css=table tr:has-text("Tester2") >> td:last-child
-    Should Be Equal    ${tester2_pct}    13,5 %
+    Should Be Equal    ${tester2_pct}    15 %
 
 
 *** Keywords ***
