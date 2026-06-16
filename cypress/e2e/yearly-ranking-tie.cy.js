@@ -79,10 +79,10 @@ describe("Jahrestabelle – Gleichstandsanzeige", () => {
 
   it("zeigt für den Spieler auf übersprungenen Platz 3 den Anteil von Position 2 an", () => {
     // Tester2 belegt Arrayposition 2, unabhängig vom displayRank 3.
-    // YEARLY_PERCENTAGES[2] = 13,5 %.
+    // YEARLY_PERCENTAGES[2] = 15 %.
     cy.contains("tr", "Tester2")
       .find("td:last-child")
-      .should("contain", "13,5 %");
+      .should("contain", "15 %");
   });
 
   it("überspringt einen Platz nach dem geteilten Rang", () => {

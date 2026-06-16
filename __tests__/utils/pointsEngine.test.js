@@ -95,15 +95,15 @@ describe("getProcessedRanking – Jahresanteil (yearlyPercentage)", () => {
     expect(tester3.yearlyPercentage).toBe(22.5);
   });
 
-  test("Tester2 auf übersprungenen Platz 3 erhält 13,5 % (Position 2)", () => {
+  test("Tester2 auf übersprungenen Platz 3 erhält 15 % (Position 2)", () => {
     // Tester2 landet auf displayRank 3, belegt aber Arrayposition 2.
-    // YEARLY_PERCENTAGES[2] = 13,5 %.
+    // YEARLY_PERCENTAGES[2] = 15 %.
     const ranking = getProcessedRanking([
       makeTournament(["Tester1", "Tester2", "Tester3"]),
       makeTournament(["Tester3", "Tester2", "Tester1"]),
     ]);
     const tester2 = ranking.find((p) => p.name === "Tester2");
-    expect(tester2.yearlyPercentage).toBe(13.5);
+    expect(tester2.yearlyPercentage).toBe(15);
   });
 
   test("Spieler ab Platz 9 erhalten null als Jahresanteil", () => {
